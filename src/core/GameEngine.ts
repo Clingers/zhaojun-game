@@ -1,0 +1,84 @@
+import Phaser from 'phaser';
+import { SceneManager } from './SceneManager';
+import { AudioManager } from './AudioManager';
+import { SaveManager } from './SaveManager';
+import { DialogueEvent, CollectEvent, TransitionEvent } from '../types';
+
+export class GameEngine {
+  private phaserGame: Phaser.Game | null = null;
+  private audioManager: AudioManager;
+  private saveManager: SaveManager;
+  private sceneManager: SceneManager;
+
+  // 事件处理器
+  private onDialogue?: (event: DialogueEvent) => void;
+  private onCollect?: (event: CollectEvent) => void;
+  private onTransition?: (event: TransitionEvent) => void;
+
+  constructor() {
+    this.audioManager = new AudioManager();
+    this.saveManager = new SaveManager();
+    this.sceneManager = new SceneManager(this.audioManager);
+  }
+
+  init(container: HTMLElement) {
+    // 注册全局引用（可选，用于调试）
+    (window as any).gameEngine = this;
+
+    this.phaserGame = new Phaser.Game({
+      type: Phaser.AUTO,
+      width: 1280,
+      height: 720,
+      parent: container,
+      backgroundColor: '#000000',
+      scene: this.sceneManager.getScenes(),
+      physics: {
+        default: 'arcade',
+        arcade: { debug: false },
+      },
+      scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+      },
+    });
+  }
+
+  // 设置事件处理器（由 React 调用）
+  setEventHandlers(
+    onDialogue: (event: DialogueEvent) => void,
+    onCollect: (event: CollectEvent) => void,
+    onTransition: (event: TransitionEvent) => void
+  ) {
+    this.onDialogue = onDialogue;
+    this.onCollect = onCollect;
+    this.onTransition = onTransition;
+
+    // 将处理器注入到当前活动的场景
+    const currentScene = this.phaserGame?.scene.getScene(this.phaserGame.scene.scenes[0]?.scene.key);
+    if (currentScene && 'setEventHandlers' in currentScene) {
+      (currentScene as any).setEventHandlers(onDialogue, onCollect, onTransition);
+    }
+  }
+
+  transitionTo(sceneKey: string, data?: any) {
+    if (this.phaserGame) {
+      this.phaserGame.scene.switch(sceneKey, data);
+    }
+  }
+
+  getAudioManager(): AudioManager {
+    return this.audioManager;
+  }
+
+  getSaveManager(): SaveManager {
+    return this.saveManager;
+  }
+
+  destroy() {
+    if (this.phaserGame) {
+      this.phaserGame.destroy(true);
+      this.phaserGame = null;
+    }
+    delete (window as any).gameEngine;
+  }
+}
