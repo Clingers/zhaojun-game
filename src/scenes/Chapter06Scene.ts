@@ -67,12 +67,7 @@ export default class Chapter06Scene extends BaseScene {
       });
       this.input.once('pointerdown', () => {
         idx++;
-        if (idx >= lines.length) {
-          text.destroy();
-          onComplete();
-        } else {
-          text.setText(lines[idx]);
-        }
+        showNext();
       });
     };
     showNext();

@@ -144,12 +144,8 @@ export default class PrologueScene extends BaseScene {
 
       this.input.once('pointerdown', () => {
         idx++;
-        if (idx >= lines.length) {
-          text.destroy();
-          onComplete();
-        } else {
-          text.setText(lines[idx]);
-        }
+        // 递归调用 showNext 来处理下一行：设置文字 + 注册下一次点击
+        showNext();
       });
     };
 
