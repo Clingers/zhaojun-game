@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import { AudioManager } from '../core/AudioManager';
-import BaseScene from './BaseScene';
 import type { DialogueEvent, CollectEvent, TransitionEvent } from '../types';
 
 // 场景工厂类型
@@ -13,17 +12,19 @@ export class SceneManager {
   constructor(audioManager: AudioManager) {
     this.audioManager = audioManager;
     this.sceneFactories = [
-      (am) => new PrologueScene(am),
-      (am) => new Chapter01Scene(am),
-      (am) => new Chapter02Scene(am),
-      (am) => new Chapter03Scene(am),
-      (am) => new Chapter04Scene(am),
-      (am) => new Chapter05Scene(am),
-      (am) => new Chapter06Scene(am),
-      (am) => new Chapter07Scene(am),
-      (am) => new Chapter08Scene(am),
-      (am) => new Chapter09Scene(am),
-      (am) => new Chapter10Scene(am),
+      // TODO: 导入并实例化各个场景
+      // 当前为占位，待 HUD 和场景类完善后启用
+      (am) => new Phaser.Scene({ key: 'prologue' }),
+      (am) => new Phaser.Scene({ key: 'chapter01' }),
+      (am) => new Phaser.Scene({ key: 'chapter02' }),
+      (am) => new Phaser.Scene({ key: 'chapter03' }),
+      (am) => new Phaser.Scene({ key: 'chapter04' }),
+      (am) => new Phaser.Scene({ key: 'chapter05' }),
+      (am) => new Phaser.Scene({ key: 'chapter06' }),
+      (am) => new Phaser.Scene({ key: 'chapter07' }),
+      (am) => new Phaser.Scene({ key: 'chapter08' }),
+      (am) => new Phaser.Scene({ key: 'chapter09' }),
+      (am) => new Phaser.Scene({ key: 'chapter10' }),
     ];
   }
 
@@ -33,17 +34,17 @@ export class SceneManager {
 
   getScene(key: string): Phaser.Scene | undefined {
     const sceneMap: Record<string, SceneFactory> = {
-      prologue: (am) => new PrologueScene(am),
-      chapter01: (am) => new Chapter01Scene(am),
-      chapter02: (am) => new Chapter02Scene(am),
-      chapter03: (am) => new Chapter03Scene(am),
-      chapter04: (am) => new Chapter04Scene(am),
-      chapter05: (am) => new Chapter05Scene(am),
-      chapter06: (am) => new Chapter06Scene(am),
-      chapter07: (am) => new Chapter07Scene(am),
-      chapter08: (am) => new Chapter08Scene(am),
-      chapter09: (am) => new Chapter09Scene(am),
-      chapter10: (am) => new Chapter10Scene(am),
+      prologue: (am) => new Phaser.Scene({ key: 'prologue' }),
+      chapter01: (am) => new Phaser.Scene({ key: 'chapter01' }),
+      chapter02: (am) => new Phaser.Scene({ key: 'chapter02' }),
+      chapter03: (am) => new Phaser.Scene({ key: 'chapter03' }),
+      chapter04: (am) => new Phaser.Scene({ key: 'chapter04' }),
+      chapter05: (am) => new Phaser.Scene({ key: 'chapter05' }),
+      chapter06: (am) => new Phaser.Scene({ key: 'chapter06' }),
+      chapter07: (am) => new Phaser.Scene({ key: 'chapter07' }),
+      chapter08: (am) => new Phaser.Scene({ key: 'chapter08' }),
+      chapter09: (am) => new Phaser.Scene({ key: 'chapter09' }),
+      chapter10: (am) => new Phaser.Scene({ key: 'chapter10' }),
     };
 
     const factory = sceneMap[key];

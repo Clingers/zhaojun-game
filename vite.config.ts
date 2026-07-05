@@ -8,7 +8,7 @@ export default defineConfig({
       '@': '/src',
     },
   },
-  base: '/',  // 如果部署到 GitHub Pages 子路径，需改为 '/仓库名/'
+  base: '/zhaojun-game/',  // GitHub Pages 仓库站点路径
   server: {
     port: 3000,
   },
