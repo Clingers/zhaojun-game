@@ -25,7 +25,9 @@ jobs:
           node-version: '22'
           cache: 'npm'
       - name: Install dependencies
-        run: npm install --include=optional
+        run: npm install --legacy-peer-deps
+      - name: Ensure rollup native binary
+        run: npm install @rollup/rollup-linux-x64-gnu --save-optional
       - name: Build
         run: npm run build
       - name: Setup Pages
