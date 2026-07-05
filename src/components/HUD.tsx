@@ -1,16 +1,99 @@
-// HUD 占位组件
-// TODO: 实现完整的 HUD 交互界面
+import { useGameStore } from '../store/gameStore';
+import { useCollectiblesStore } from '../store/collectiblesStore';
 
 interface HUDProps {
   className?: string;
 }
 
 export default function HUD({ className = '' }: HUDProps) {
+  const { currentChapter, progress, resetProgress } = useGameStore();
+  const { unlocked, getProgress } = useCollectiblesStore();
+
+  const chapterNames: Record<string, string> = {
+    prologue: '序章：一只大雁',
+    chapter01: '第一章：长安',
+    chapter02: '第二章：渭水',
+    chapter03: '第三章：秦岭',
+    chapter04: '第四章：黄河',
+    chapter05: '第五章：雁门关',
+    chapter06: '第六章：草原',
+    chapter07: '第七章：暴风雪',
+    chapter08: '第八章：篝火',
+    chapter09: '第九章：王庭',
+    chapter10: '终章：二十年后',
+  };
+
   return (
-    <div className={`hud-overlay ${className}`}>
-      {/* TODO: Forward / Stay / Dialogue / Collect 交互按钮 */}
-      <div className="hud-placeholder opacity-0">
-        HUD 组件开发中...
+    <div className={`hud-overlay w-full h-full ${className}`}>
+      {/* 顶部信息栏 */}
+      <div className="absolute top-4 left-4 right-4 flex justify-between items-start z-20">
+        <div className="bg-black/40 backdrop-blur-sm px-4 py-2 rounded-lg">
+          <h1 className="text-white text-lg font-serif tracking-wider">昭君：一路向北</h1>
+          <p className="text-[#D4A54A] text-sm font-serif mt-1">
+            {chapterNames[currentChapter] || currentChapter}
+          </p>
+        </div>
+
+        {/* 旅程进度 */}
+        <div className="bg-black/40 backdrop-blur-sm px-4 py-2 rounded-lg flex items-center gap-3">
+          <div className="flex items-center gap-1">
+            <span className="text-white text-sm">📖</span>
+            <span className="text-white/80 text-sm">
+              {Object.keys(progress).length}/10
+            </span>
+          </div>
+          <div className="w-px h-4 bg-white/20" />
+          <div className="flex items-center gap-1">
+            <span className="text-white text-sm">✨</span>
+            <span className="text-white/80 text-sm">
+              {unlocked.length}/8
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 左下角提示 */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20">
+        <p className="text-white/40 text-sm font-serif tracking-wider animate-pulse">
+          ◇ 点击屏幕继续 ◇
+        </p>
+      </div>
+
+      {/* 右下角收集品入口 */}
+      <div className="absolute bottom-4 right-4 z-20">
+        <button
+          onClick={() => {
+            const collected = useCollectiblesStore.getState();
+            const items = Object.values(collected.items).filter(i => i.unlocked);
+            if (items.length > 0) {
+              const names = items.map(i => `  • ${i.name}: ${i.description}`).join('\n');
+              alert(`✨ 旅行册 - 已收集 ${items.length}/8 件\n\n${names}\n\n收集进度: ${getProgress()}%`);
+            } else {
+              alert('✨ 旅行册\n\n你还没有收集到任何物品。\n在旅途中仔细观察，或许会有发现。');
+            }
+          }}
+          className="bg-black/40 backdrop-blur-sm px-3 py-2 rounded-lg text-white/70 text-sm
+                     hover:bg-black/60 hover:text-white transition-all duration-300 font-serif"
+        >
+          ✨ 旅行册 ({getProgress()}%)
+        </button>
+      </div>
+
+      {/* 右上角设置 */}
+      <div className="absolute top-4 right-36 z-20">
+        <button
+          onClick={() => {
+            if (confirm('确定要重置所有进度吗？')) {
+              resetProgress();
+              localStorage.removeItem('zhaojun_game_save');
+              window.location.reload();
+            }
+          }}
+          className="bg-black/30 hover:bg-black/50 backdrop-blur-sm px-2 py-1 rounded
+                     text-white/40 hover:text-white/70 text-xs transition-all duration-300"
+        >
+          ⚙
+        </button>
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
-import { AudioManager } from '../../core/AudioManager';
-import { DialogueEvent, CollectEvent, TransitionEvent } from '../../types';
+import { AudioManager } from '../core/AudioManager';
+import { DialogueEvent, CollectEvent, TransitionEvent } from '../types';
 
-export abstract class BaseScene extends Phaser.Scene {
+export default abstract class BaseScene extends Phaser.Scene {
   protected chapterId: string;
   protected audioManager: AudioManager;
   protected background: Phaser.GameObjects.Image | null = null;

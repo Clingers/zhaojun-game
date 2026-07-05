@@ -10,22 +10,26 @@
     "deploy": "npm run build && echo 'Build complete for GitHub Pages'"
   },
   "dependencies": {
+    "gsap": "^3.12.0",
+    "phaser": "^3.80.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "phaser": "^3.80.0",
-    "gsap": "^3.12.0",
     "zustand": "^4.4.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.0.0",
+    "@vitest/coverage-v8": "^4.1.9",
     "autoprefixer": "^10.4.0",
+    "jsdom": "^29.1.1",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.0.0",
     "vite": "^5.0.0",
-    "@types/node": "^20.0.0"
+    "vitest": "^4.1.9"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "*"
