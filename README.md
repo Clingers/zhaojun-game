@@ -30,13 +30,36 @@
 zhaojun-game/
 ├── src/
 │   ├── core/           # 游戏核心引擎
-│   ├── store/          # 状态管理
-│   ├── scenes/         # Phaser 场景
-│   ├── components/     # React UI 组件
-│   ├── data/           # 剧本数据
-│   └── types/          # TypeScript 类型
-├── assets/             # 静态资源
-├── docs/               # 设计文档
+│   │   ├── AudioManager.ts
+│   │   ├── GameEngine.ts
+│   │   ├── SaveManager.ts
+│   │   └── SceneManager.ts
+│   ├── store/          # Zustand 状态管理
+│   │   ├── gameStore.ts
+│   │   └── collectiblesStore.ts
+│   ├── scenes/         # Phaser 3 游戏场景
+│   │   ├── BaseScene.ts
+│   │   ├── PrologueScene.ts
+│   │   ├── Chapter01Scene.ts ~ Chapter10Scene.ts
+│   ├── data/           # 剧本与收集品数据
+│   │   ├── collectibles.json
+│   │   └── chapter_prompts.json
+│   ├── types/          # TypeScript 类型定义
+│   │   └── index.ts
+│   ├── __tests__/      # 测试文件
+│   │   ├── core.test.ts
+│   │   └── setup.ts
+│   ├── App.tsx         # React 根组件
+│   └── main.tsx        # 应用入口
+├── assets/             # 静态资源（图片、音频）
+├── docs/               # 设计文档与剧本
+│   ├── design/         # 技术设计文档
+│   ├── story/          # 剧本文件（十章 + 序章）
+│   └── references/     # 史料研究
+├── index.html
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
 └── ...
 ```
 
