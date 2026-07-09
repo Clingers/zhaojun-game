@@ -46,7 +46,7 @@ export class GameEngine {
         autoCenter: Phaser.Scale.CENTER_BOTH,
       },
       loader: {
-        baseURL: '/',
+        baseURL: import.meta.env.BASE_URL,
       },
     });
   }
