@@ -1,10 +1,56 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#4A4A4A;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#C4A86B;stop-opacity:1" />
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4A4A5A"/>
+      <stop offset="50%" stop-color="#6A6A7A"/>
+      <stop offset="100%" stop-color="#8A8A8A"/>
+    </linearGradient>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5A5A5A"/>
+      <stop offset="100%" stop-color="#3A3A3A"/>
     </linearGradient>
   </defs>
-  <rect width="1280" height="720" fill="url(#bg)" />
-  <text x="640" y="360" font-family="serif" font-size="48" fill="rgba(0,0,0,0.3)" text-anchor="middle" dominant-baseline="middle">第五章：雁门关</text>
+  <rect width="1280" height="720" fill="url(#sky)"/>
+  <!-- 关城 -->
+  <rect x="350" y="150" width="580" height="450" fill="url(#wall)"/>
+  <!-- 城齿 -->
+  <g fill="#4A4A4A">
+    <rect x="350" y="130" width="40" height="30"/>
+    <rect x="410" y="130" width="40" height="30"/>
+    <rect x="470" y="130" width="40" height="30"/>
+    <rect x="530" y="130" width="40" height="30"/>
+    <rect x="590" y="130" width="40" height="30"/>
+    <rect x="650" y="130" width="40" height="30"/>
+    <rect x="710" y="130" width="40" height="30"/>
+    <rect x="770" y="130" width="40" height="30"/>
+    <rect x="830" y="130" width="40" height="30"/>
+    <rect x="890" y="130" width="40" height="30"/>
+  </g>
+  <!-- 城门 -->
+  <rect x="540" y="400" width="200" height="200" fill="#1A1A1A" rx="100 100 0 0"/>
+  <!-- 门缝 -->
+  <line x1="640" y1="400" x2="640" y2="600" stroke="#2A2A2A" stroke-width="2"/>
+  <!-- 门钉 -->
+  <g fill="#5A5A5A">
+    <circle cx="580" cy="460" r="3"/>
+    <circle cx="620" cy="460" r="3"/>
+    <circle cx="660" cy="460" r="3"/>
+    <circle cx="700" cy="460" r="3"/>
+    <circle cx="580" cy="500" r="3"/>
+    <circle cx="620" cy="500" r="3"/>
+    <circle cx="660" cy="500" r="3"/>
+    <circle cx="700" cy="500" r="3"/>
+  </g>
+  <!-- 城墙延伸 -->
+  <rect x="0" y="250" width="350" height="350" fill="#4A4A4A"/>
+  <rect x="930" y="250" width="350" height="350" fill="#4A4A4A"/>
+  <!-- 荒原 -->
+  <rect x="0" y="600" width="1280" height="120" fill="#5A5A4A"/>
+  <!-- 风沙 -->
+  <g stroke="#8A8A7A" stroke-width="0.5" opacity="0.2">
+    <line x1="100" y1="300" x2="80" y2="310"/>
+    <line x1="200" y1="350" x2="170" y2="365"/>
+    <line x1="1000" y1="320" x2="1030" y2="330"/>
+    <line x1="1100" y1="280" x2="1130" y2="290"/>
+  </g>
 </svg>

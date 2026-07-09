@@ -1,10 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#8B7355;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#6B7B8D;stop-opacity:1" />
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6B7B8D"/>
+      <stop offset="50%" stop-color="#8899A8"/>
+      <stop offset="100%" stop-color="#A0B0BA"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5A7A8A"/>
+      <stop offset="100%" stop-color="#3A5A6A"/>
     </linearGradient>
   </defs>
-  <rect width="1280" height="720" fill="url(#bg)" />
-  <text x="640" y="360" font-family="serif" font-size="48" fill="rgba(0,0,0,0.3)" text-anchor="middle" dominant-baseline="middle">第二章：渭水</text>
+  <rect width="1280" height="720" fill="url(#sky)"/>
+  <!-- 远山 -->
+  <path d="M0 350 Q200 280 400 330 Q600 290 800 320 Q1000 280 1280 340 L1280 720 L0 720Z" fill="#5A6A78" opacity="0.5"/>
+  <!-- 河水 -->
+  <rect x="0" y="380" width="1280" height="200" fill="url(#water)" opacity="0.7"/>
+  <!-- 水波 -->
+  <g stroke="#6A8A9A" stroke-width="1" fill="none" opacity="0.3">
+    <path d="M0 400 Q50 395 100 400 Q150 405 200 400 Q250 395 300 400 Q350 405 400 400 Q450 395 500 400 Q550 405 600 400 Q650 395 700 400 Q750 405 800 400 Q850 395 900 400 Q950 405 1000 400 Q1050 395 1100 400 Q1150 405 1200 400 Q1250 395 1280 400"/>
+    <path d="M0 450 Q50 445 100 450 Q150 455 200 450 Q250 445 300 450 Q350 455 400 450 Q450 445 500 450 Q550 455 600 450 Q650 445 700 450 Q750 455 800 450 Q850 445 900 450 Q950 455 1000 450 Q1050 445 1100 450 Q1150 455 1200 450 Q1250 445 1280 450"/>
+    <path d="M0 500 Q50 495 100 500 Q150 505 200 500 Q250 495 300 500 Q350 505 400 500 Q450 495 500 500 Q550 505 600 500 Q650 495 700 500 Q750 505 800 500 Q850 495 900 500 Q950 505 1000 500 Q1050 495 1100 500 Q1150 505 1200 500 Q1250 495 1280 500"/>
+  </g>
+  <!-- 河岸 -->
+  <path d="M0 580 Q200 570 400 575 Q600 580 800 572 Q1000 578 1280 575 L1280 720 L0 720Z" fill="#6B5B4A"/>
+  <!-- 马车队 -->
+  <g transform="translate(300, 540)">
+    <rect x="0" y="0" width="60" height="35" fill="#4A3A2A" rx="3"/>
+    <circle cx="15" cy="38" r="8" fill="#3A2A1A" stroke="#5A4A3A" stroke-width="1"/>
+    <circle cx="45" cy="38" r="8" fill="#3A2A1A" stroke="#5A4A3A" stroke-width="1"/>
+    <line x1="30" y1="0" x2="40" y2="-15" stroke="#5A4A3A" stroke-width="2"/>
+  </g>
+  <g transform="translate(450, 545) scale(0.85)">
+    <rect x="0" y="0" width="55" height="30" fill="#3A2A1A" rx="3"/>
+    <circle cx="12" cy="33" r="7" fill="#3A2A1A" stroke="#4A3A2A" stroke-width="1"/>
+    <circle cx="42" cy="33" r="7" fill="#3A2A1A" stroke="#4A3A2A" stroke-width="1"/>
+  </g>
 </svg>

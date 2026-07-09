@@ -1,10 +1,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#4A6B8A;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#87CEEB;stop-opacity:1" />
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2C3E50"/>
+      <stop offset="40%" stop-color="#4A6B8A"/>
+      <stop offset="70%" stop-color="#6B8FB5"/>
+      <stop offset="100%" stop-color="#C4A882"/>
     </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="20%" r="40%">
+      <stop offset="0%" stop-color="#D4A54A" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#D4A54A" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="2"/></filter>
   </defs>
-  <rect width="1280" height="720" fill="url(#bg)" />
-  <text x="640" y="360" font-family="serif" font-size="48" fill="rgba(0,0,0,0.3)" text-anchor="middle" dominant-baseline="middle">序章：一只大雁</text>
+  <rect width="1280" height="720" fill="url(#sky)"/>
+  <rect width="1280" height="720" fill="url(#sun)"/>
+  <!-- 远处的山 -->
+  <path d="M0 520 Q150 400 300 480 Q450 430 600 470 Q750 410 900 460 Q1050 420 1280 500 L1280 720 L0 720Z" fill="#3D5A80" opacity="0.4"/>
+  <path d="M0 560 Q200 490 400 530 Q550 480 700 520 Q850 470 1000 510 Q1150 490 1280 540 L1280 720 L0 720Z" fill="#2C3E50" opacity="0.3"/>
+  <!-- 地面 -->
+  <rect x="0" y="600" width="1280" height="120" fill="#5A4A32" opacity="0.5" rx="0"/>
+  <!-- 大雁 -->
+  <g transform="translate(500, 200)" opacity="0.7">
+    <path d="M0 0 Q-15 -8 -30 -5 Q-15 -3 0 0 Q15 -3 30 -5 Q15 -8 0 0Z" fill="#1a1a2e"/>
+  </g>
+  <g transform="translate(550, 180) scale(0.7)" opacity="0.5">
+    <path d="M0 0 Q-12 -6 -24 -4 Q-12 -2 0 0 Q12 -2 24 -4 Q12 -6 0 0Z" fill="#1a1a2e"/>
+  </g>
+  <!-- 云 -->
+  <g opacity="0.15" fill="white">
+    <ellipse cx="200" cy="150" rx="80" ry="20"/>
+    <ellipse cx="250" cy="145" rx="60" ry="15"/>
+    <ellipse cx="900" cy="180" rx="100" ry="25"/>
+    <ellipse cx="970" cy="175" rx="70" ry="18"/>
+  </g>
+  <!-- 飘落的羽毛 -->
+  <g transform="translate(600, 300) rotate(15)" opacity="0.3">
+    <ellipse cx="0" cy="0" rx="2" ry="10" fill="#D4A54A"/>
+  </g>
 </svg>

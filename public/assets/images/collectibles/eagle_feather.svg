@@ -1,4 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
-  <rect width="200" height="200" fill="#FFFAFA" rx="10"/>
-  <text x="100" y="100" font-family="serif" font-size="18" fill="rgba(255,255,255,0.7)" text-anchor="middle" dominant-baseline="middle">eagle_feather</text>
+  <rect width="200" height="200" fill="#1A1A2A" rx="15"/>
+  <g transform="translate(100, 100) rotate(-10)">
+    <path d="M0 -45 Q18 -35 25 -18 Q28 -5 22 8 Q14 18 0 25" fill="#E8E8F0" opacity="0.9"/>
+    <path d="M0 -45 Q-12 -35 -15 -22 Q-16 -10 -10 3 Q-5 14 0 25" fill="#D8D8E0" opacity="0.8"/>
+    <line x1="0" y1="-45" x2="0" y2="25" stroke="#C8C8D0" stroke-width="1.5"/>
+    <!-- 羽丝 -->
+    <g stroke="#F0F0F8" stroke-width="0.5" opacity="0.7">
+      <line x1="2" y1="-35" x2="15" y2="-33"/>
+      <line x1="3" y1="-25" x2="20" y2="-22"/>
+      <line x1="4" y1="-12" x2="18" y2="-10"/>
+      <line x1="3" y1="0" x2="15" y2="2"/>
+      <line x1="-2" y1="-35" x2="-12" y2="-33"/>
+      <line x1="-3" y1="-25" x2="-14" y2="-22"/>
+      <line x1="-3" y1="-12" x2="-12" y2="-10"/>
+      <line x1="-2" y1="0" x2="-10" y2="2"/>
+    </g>
+  </g>
+  <text x="100" y="175" font-family="serif" font-size="11" fill="#D8D8E0" text-anchor="middle" opacity="0.6">白鹰羽</text>
 </svg>

@@ -1,4 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
-  <rect width="200" height="200" fill="#E0F0FF" rx="10"/>
-  <text x="100" y="100" font-family="serif" font-size="18" fill="rgba(255,255,255,0.7)" text-anchor="middle" dominant-baseline="middle">snowflake</text>
+  <rect width="200" height="200" fill="#1A1A2A" rx="15"/>
+  <g transform="translate(100, 100)">
+    <line x1="0" y1="-45" x2="0" y2="45" stroke="#A0C0D0" stroke-width="1.5"/>
+    <line x1="-39" y1="-22.5" x2="39" y2="22.5" stroke="#A0C0D0" stroke-width="1.5"/>
+    <line x1="-39" y1="22.5" x2="39" y2="-22.5" stroke="#A0C0D0" stroke-width="1.5"/>
+    <!-- 分枝 -->
+    <g stroke="#A0C0D0" stroke-width="1">
+      <line x1="0" y1="-30" x2="-8" y2="-35"/>
+      <line x1="0" y1="-30" x2="8" y2="-35"/>
+      <line x1="0" y1="30" x2="-8" y2="35"/>
+      <line x1="0" y1="30" x2="8" y2="35"/>
+      <line x1="-26" y1="-15" x2="-31" y2="-22"/>
+      <line x1="-26" y1="-15" x2="-22" y2="-8"/>
+      <line x1="26" y1="15" x2="31" y2="22"/>
+      <line x1="26" y1="15" x2="22" y2="8"/>
+    </g>
+    <circle cx="0" cy="0" r="3" fill="#A0C0D0" opacity="0.5"/>
+  </g>
+  <text x="100" y="175" font-family="serif" font-size="11" fill="#8AB0C0" text-anchor="middle" opacity="0.6">雪花</text>
 </svg>

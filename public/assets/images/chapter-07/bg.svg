@@ -1,10 +1,53 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#F0F0F0;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#808080;stop-opacity:1" />
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A1A2A"/>
+      <stop offset="30%" stop-color="#2A2A3A"/>
+      <stop offset="60%" stop-color="#3A3A4A"/>
+      <stop offset="100%" stop-color="#4A4A5A"/>
     </linearGradient>
+    <filter id="snow-blur"><feGaussianBlur stdDeviation="1"/></filter>
   </defs>
-  <rect width="1280" height="720" fill="url(#bg)" />
-  <text x="640" y="360" font-family="serif" font-size="48" fill="rgba(0,0,0,0.3)" text-anchor="middle" dominant-baseline="middle">第七章：暴风雪</text>
+  <rect width="1280" height="720" fill="url(#sky)"/>
+  <!-- 远处黑线（暴风雪线） -->
+  <rect x="200" y="250" width="900" height="5" fill="#0A0A1A" opacity="0.8" rx="2"/>
+  <rect x="100" y="300" width="1100" height="8" fill="#0A0A1A" opacity="0.5" rx="2"/>
+  <!-- 风雪中的地形 -->
+  <path d="M0 500 Q300 460 600 480 Q900 450 1280 490 L1280 720 L0 720Z" fill="#3A3A4A" opacity="0.5"/>
+  <path d="M0 550 Q400 520 800 540 Q1100 510 1280 550 L1280 720 L0 720Z" fill="#2A2A3A" opacity="0.6"/>
+  <!-- 马车剪影 -->
+  <g transform="translate(500, 490)" opacity="0.5">
+    <rect x="0" y="-20" width="40" height="25" fill="#1A1A2A"/>
+    <circle cx="8" cy="7" r="6" fill="#1A1A2A"/>
+    <circle cx="32" cy="7" r="6" fill="#1A1A2A"/>
+  </g>
+  <!-- 雪花 -->
+  <g fill="white" opacity="0.4">
+    <circle cx="100" cy="100" r="2"/>
+    <circle cx="200" cy="50" r="1.5"/>
+    <circle cx="300" cy="150" r="2"/>
+    <circle cx="400" cy="80" r="1"/>
+    <circle cx="500" cy="120" r="2.5"/>
+    <circle cx="600" cy="60" r="1.5"/>
+    <circle cx="700" cy="180" r="2"/>
+    <circle cx="800" cy="90" r="1"/>
+    <circle cx="900" cy="140" r="2"/>
+    <circle cx="1000" cy="70" r="1.5"/>
+    <circle cx="1100" cy="110" r="2"/>
+    <circle cx="1200" cy="160" r="1.5"/>
+    <circle cx="150" cy="250" r="1"/>
+    <circle cx="350" cy="300" r="2"/>
+    <circle cx="550" cy="280" r="1.5"/>
+    <circle cx="750" cy="350" r="2"/>
+    <circle cx="950" cy="260" r="1"/>
+    <circle cx="1150" cy="320" r="1.5"/>
+  </g>
+  <!-- 风线 -->
+  <g stroke="#6A6A7A" stroke-width="0.5" opacity="0.15">
+    <line x1="0" y1="200" x2="80" y2="195"/>
+    <line x1="200" y1="350" x2="300" y2="342"/>
+    <line x1="500" y1="280" x2="620" y2="270"/>
+    <line x1="800" y1="230" x2="920" y2="222"/>
+    <line x1="1000" y1="380" x2="1100" y2="372"/>
+  </g>
 </svg>

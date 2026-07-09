@@ -1,10 +1,49 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2E4A2E;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#6B7B8D;stop-opacity:1" />
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2A3A3A"/>
+      <stop offset="50%" stop-color="#3A4A4A"/>
+      <stop offset="100%" stop-color="#4A5A4A"/>
     </linearGradient>
+    <filter id="rain-blur"><feGaussianBlur stdDeviation="0.5"/></filter>
   </defs>
-  <rect width="1280" height="720" fill="url(#bg)" />
-  <text x="640" y="360" font-family="serif" font-size="48" fill="rgba(0,0,0,0.3)" text-anchor="middle" dominant-baseline="middle">第三章：秦岭</text>
+  <rect width="1280" height="720" fill="url(#sky)"/>
+  <!-- 远山 -->
+  <path d="M0 400 Q200 300 500 350 Q700 280 900 320 Q1100 300 1280 380 L1280 720 L0 720Z" fill="#2A3A2A" opacity="0.6"/>
+  <path d="M0 450 Q300 380 600 420 Q800 370 1000 400 Q1200 380 1280 440 L1280 720 L0 720Z" fill="#1A2A1A" opacity="0.5"/>
+  <!-- 树木 -->
+  <g fill="#1A2A1A" opacity="0.7">
+    <polygon points="100,450 130,250 160,450"/>
+    <polygon points="300,430 340,240 380,430"/>
+    <polygon points="500,440 530,280 560,440"/>
+    <polygon points="800,420 840,260 880,420"/>
+    <polygon points="1000,430 1030,270 1060,430"/>
+    <polygon points="1150,440 1175,300 1200,440"/>
+  </g>
+  <!-- 山路 -->
+  <path d="M200 720 Q300 600 500 550 Q700 520 900 500 Q1100 490 1280 500" stroke="#3A2A1A" stroke-width="3" fill="none"/>
+  <!-- 路面泥泞 -->
+  <path d="M300 580 Q400 560 500 550 Q600 540 700 530" stroke="#4A3A2A" stroke-width="2" fill="none" opacity="0.5"/>
+  <!-- 马车 -->
+  <g transform="translate(550, 510)">
+    <rect x="0" y="0" width="50" height="30" fill="#3A2A1A" rx="2"/>
+    <circle cx="12" cy="33" r="7" fill="#2A1A0A" stroke="#4A3A2A" stroke-width="1"/>
+    <circle cx="38" cy="33" r="7" fill="#2A1A0A" stroke="#4A3A2A" stroke-width="1"/>
+  </g>
+  <!-- 雨丝 -->
+  <g stroke="#6A8A9A" stroke-width="0.5" opacity="0.3">
+    <line x1="50" y1="0" x2="40" y2="30"/>
+    <line x1="150" y1="50" x2="140" y2="80"/>
+    <line x1="250" y1="20" x2="240" y2="50"/>
+    <line x1="350" y1="70" x2="340" y2="100"/>
+    <line x1="450" y1="10" x2="440" y2="40"/>
+    <line x1="550" y1="40" x2="540" y2="70"/>
+    <line x1="650" y1="60" x2="640" y2="90"/>
+    <line x1="750" y1="0" x2="740" y2="30"/>
+    <line x1="850" y1="30" x2="840" y2="60"/>
+    <line x1="950" y1="50" x2="940" y2="80"/>
+    <line x1="1050" y1="15" x2="1040" y2="45"/>
+    <line x1="1150" y1="45" x2="1140" y2="75"/>
+    <line x1="1250" y1="25" x2="1240" y2="55"/>
+  </g>
 </svg>

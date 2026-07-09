@@ -1,4 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
-  <rect width="200" height="200" fill="#C4A86B" rx="10"/>
-  <text x="100" y="100" font-family="serif" font-size="18" fill="rgba(255,255,255,0.7)" text-anchor="middle" dominant-baseline="middle">yellow_river_sand</text>
+  <rect width="200" height="200" fill="#1A1A2A" rx="15"/>
+  <rect x="30" y="60" width="140" height="80" fill="#8A7A3A" rx="5"/>
+  <g fill="#6A5A2A" opacity="0.5">
+    <circle cx="55" cy="80" r="4"/>
+    <circle cx="70" cy="95" r="3"/>
+    <circle cx="90" cy="85" r="5"/>
+    <circle cx="110" cy="100" r="3.5"/>
+    <circle cx="130" cy="78" r="4"/>
+    <circle cx="150" cy="92" r="3"/>
+    <circle cx="65" cy="110" r="3"/>
+    <circle cx="100" cy="115" r="4"/>
+    <circle cx="140" cy="108" r="3"/>
+  </g>
+  <rect x="30" y="60" width="140" height="80" fill="none" stroke="#9A8A4A" stroke-width="1" rx="5"/>
+  <text x="100" y="175" font-family="serif" font-size="11" fill="#8A7A4A" text-anchor="middle" opacity="0.6">黄河砂</text>
 </svg>

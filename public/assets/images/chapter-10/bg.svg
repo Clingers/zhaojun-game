@@ -1,10 +1,48 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#B0C4DE;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#D3D3D3;stop-opacity:1" />
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6A7A8A"/>
+      <stop offset="30%" stop-color="#8A9AAA"/>
+      <stop offset="60%" stop-color="#AABABA"/>
+      <stop offset="100%" stop-color="#BACABA"/>
+    </linearGradient>
+    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4A8A3A"/>
+      <stop offset="100%" stop-color="#3A6A2A"/>
     </linearGradient>
   </defs>
-  <rect width="1280" height="720" fill="url(#bg)" />
-  <text x="640" y="360" font-family="serif" font-size="48" fill="rgba(0,0,0,0.3)" text-anchor="middle" dominant-baseline="middle">第十章：北地</text>
+  <rect width="1280" height="720" fill="url(#sky)"/>
+  <!-- 远山 -->
+  <path d="M0 350 Q200 310 400 340 Q600 300 800 330 Q1000 290 1280 340 L1280 720 L0 720Z" fill="#6A8A5A" opacity="0.3"/>
+  <!-- 草原 -->
+  <path d="M0 400 Q200 390 400 395 Q600 385 800 395 Q1000 388 1280 395 L1280 720 L0 720Z" fill="#5A8A4A" opacity="0.3"/>
+  <!-- 青冢 -->
+  <g transform="translate(640, 430)">
+    <ellipse cx="0" cy="10" rx="60" ry="25" fill="#3A6A2A"/>
+    <ellipse cx="0" cy="5" rx="50" ry="35" fill="url(#grass)"/>
+    <ellipse cx="0" cy="0" rx="40" ry="30" fill="#4A8A3A"/>
+    <!-- 青草 > -->
+    <g stroke="#5AAA4A" stroke-width="1.5">
+      <line x1="-20" y1="-10" x2="-22" y2="-25"/>
+      <line x1="-10" y1="-15" x2="-12" y2="-30"/>
+      <line x1="5" y1="-18" x2="3" y2="-35"/>
+      <line x1="15" y1="-12" x2="13" y2="-28"/>
+      <line x1="-5" y1="-5" x2="-7" y2="-20"/>
+      <line x1="25" y1="-5" x2="23" y2="-18"/>
+    </g>
+  </g>
+  <!-- 远飞的大雁 -->
+  <g transform="translate(800, 150)" opacity="0.3">
+    <path d="M0 0 Q-10 -5 -20 -3 Q-10 -2 0 0 Q10 -2 20 -3 Q10 -5 0 0Z" fill="#2A3A4A"/>
+  </g>
+  <g transform="translate(830, 140) scale(0.7)" opacity="0.2">
+    <path d="M0 0 Q-8 -4 -16 -3 Q-8 -2 0 0 Q8 -2 16 -3 Q8 -4 0 0Z" fill="#2A3A4A"/>
+  </g>
+  <!-- 石碑 -->
+  <g transform="translate(640, 445)">
+    <rect x="-4" y="-40" width="8" height="45" fill="#7A7A7A" rx="1"/>
+    <rect x="-15" y="-45" width="30" height="8" fill="#7A7A7A" rx="1"/>
+  </g>
+  <!-- 地面 -->
+  <path d="M0 520 Q200 510 400 515 Q600 512 800 518 Q1000 510 1280 515 L1280 720 L0 720Z" fill="#5A7A4A" opacity="0.3"/>
 </svg>
