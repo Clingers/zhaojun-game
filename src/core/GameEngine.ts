@@ -56,10 +56,15 @@ export class GameEngine {
     this.onCollect = onCollect;
     this.onTransition = onTransition;
 
-    // 将处理器注入到当前活动的场景
-    const currentScene = this.phaserGame?.scene.getScene(this.phaserGame.scene.scenes[0]?.scene.key);
-    if (currentScene && 'setEventHandlers' in currentScene) {
-      (currentScene as any).setEventHandlers(onDialogue, onCollect, onTransition);
+    // 将处理器注入到所有已有场景（包括已创建但未激活的）
+    if (this.phaserGame) {
+      // Phaser 4+ getScenes(true) 返回所有场景实例
+      const allScenes = this.phaserGame.scene.getScenes(true);
+      allScenes.forEach((scene) => {
+        if (scene && 'setEventHandlers' in scene) {
+          (scene as any).setEventHandlers(onDialogue, onCollect, onTransition);
+        }
+      });
     }
   }
 
