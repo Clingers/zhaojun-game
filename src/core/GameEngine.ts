@@ -3,6 +3,7 @@ import { SceneManager } from './SceneManager';
 import { AudioManager } from './AudioManager';
 import { SaveManager } from './SaveManager';
 import { DialogueEvent, CollectEvent, TransitionEvent } from '../types';
+import { useGameStore } from '../store/gameStore';
 
 export class GameEngine {
   private phaserGame: Phaser.Game | null = null;
@@ -78,6 +79,9 @@ export class GameEngine {
 
   transitionTo(sceneKey: string, data?: any) {
     if (this.phaserGame) {
+      // 更新 React 状态（HUD 章节标题等）
+      useGameStore.getState().setChapter(sceneKey);
+
       // 停止所有当前场景，启动目标场景
       const currentScenes = this.phaserGame.scene.getScenes(true);
       currentScenes.forEach((s) => {

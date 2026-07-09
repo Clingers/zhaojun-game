@@ -35,7 +35,7 @@ export default class Chapter04Scene extends BaseScene {
 '—— 点击继续前行 ——'
     ];
     this.showStorySequence(lines, () => {
-      this.narrativeDone = true;
+      this.transitionTo('chapter05');
     });
   }
 

@@ -35,7 +35,7 @@ export default class Chapter05Scene extends BaseScene {
 '—— 她再也没有回到长安。'
     ];
     this.showStorySequence(lines, () => {
-      this.narrativeDone = true;
+      this.transitionTo('chapter06');
     });
   }
 
