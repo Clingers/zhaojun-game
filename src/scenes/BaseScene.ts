@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { AudioManager } from '../core/AudioManager';
 import { DialogueEvent, CollectEvent, TransitionEvent } from '../types';
+import { GameEngine } from '../core/GameEngine';
 
 export default abstract class BaseScene extends Phaser.Scene {
   protected chapterId: string;
@@ -34,6 +35,15 @@ export default abstract class BaseScene extends Phaser.Scene {
   }
 
   create() {
+    // 从 GameEngine 静态属性拉取事件处理器（解决时序问题）
+    if (GameEngine.pendingOnTransition && !this.transitionCallback) {
+      this.setEventHandlers(
+        GameEngine.pendingOnDialogue || (() => {}),
+        GameEngine.pendingOnCollect || (() => {}),
+        GameEngine.pendingOnTransition
+      );
+    }
+
     this.loadBackground();
     this.setupInteractions();
     this.playAmbientAudio();

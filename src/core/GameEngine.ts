@@ -10,7 +10,11 @@ export class GameEngine {
   private saveManager: SaveManager;
   private sceneManager: SceneManager;
 
-  // 事件处理器
+  // 事件处理器（static 以便场景在初始化后自行获取）
+  static pendingOnDialogue?: (event: DialogueEvent) => void;
+  static pendingOnCollect?: (event: CollectEvent) => void;
+  static pendingOnTransition?: (event: TransitionEvent) => void;
+
   private onDialogue?: (event: DialogueEvent) => void;
   private onCollect?: (event: CollectEvent) => void;
   private onTransition?: (event: TransitionEvent) => void;
@@ -56,9 +60,13 @@ export class GameEngine {
     this.onCollect = onCollect;
     this.onTransition = onTransition;
 
-    // 将处理器注入到所有已有场景（包括已创建但未激活的）
+    // 同时存储为 static，供后续初始化的场景自己拉取
+    GameEngine.pendingOnDialogue = onDialogue;
+    GameEngine.pendingOnCollect = onCollect;
+    GameEngine.pendingOnTransition = onTransition;
+
+    // 注入到所有已有场景
     if (this.phaserGame) {
-      // Phaser 4+ getScenes(true) 返回所有场景实例
       const allScenes = this.phaserGame.scene.getScenes(true);
       allScenes.forEach((scene) => {
         if (scene && 'setEventHandlers' in scene) {
@@ -70,7 +78,14 @@ export class GameEngine {
 
   transitionTo(sceneKey: string, data?: any) {
     if (this.phaserGame) {
-      this.phaserGame.scene.switch(sceneKey, data);
+      // 停止所有当前场景，启动目标场景
+      const currentScenes = this.phaserGame.scene.getScenes(true);
+      currentScenes.forEach((s) => {
+        if (s.scene.key !== sceneKey) {
+          this.phaserGame!.scene.stop(s.scene.key);
+        }
+      });
+      this.phaserGame.scene.start(sceneKey, data);
     }
   }
 
