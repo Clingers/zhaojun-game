@@ -5,7 +5,6 @@ import { AudioManager } from '../core/AudioManager';
 
 export default class Chapter10Scene extends BaseScene {
   private textElements: Phaser.GameObjects.Text[] = [];
-  private narrativeDone: boolean = false;
 
   constructor(audioManager: AudioManager) {
     super('chapter10', audioManager);

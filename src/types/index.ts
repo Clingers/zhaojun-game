@@ -91,3 +91,24 @@ export interface TransitionEvent {
 }
 
 export type GameEvent = DialogueEvent | CollectEvent | TransitionEvent;
+
+// 热区交互
+export interface HotspotConfig {
+  id: string;
+  x: number; y: number;
+  width: number; height: number;
+  type: 'collectible' | 'observation' | 'dialogue';
+  label?: string;
+  collectibleId?: string;
+  narrativeText?: string;
+  /** 交互一次后是否消失 */
+  oneShot?: boolean;
+}
+
+export interface CollectibleItem {
+  id: string;
+  name: string;
+  description: string;
+  chapterId: string;
+  imageUrl: string;
+}

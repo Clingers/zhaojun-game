@@ -1,5 +1,7 @@
 import { useGameStore } from '../store/gameStore';
 import { useCollectiblesStore } from '../store/collectiblesStore';
+import { useState } from 'react';
+import TravelAlbum from './TravelAlbum';
 
 interface HUDProps {
   className?: string;
@@ -8,6 +10,7 @@ interface HUDProps {
 export default function HUD({ className = '' }: HUDProps) {
   const { currentChapter, progress, resetProgress } = useGameStore();
   const { unlocked, getProgress } = useCollectiblesStore();
+  const [showAlbum, setShowAlbum] = useState(false);
 
   const chapterNames: Record<string, string> = {
     prologue: '序章：一只大雁',
@@ -62,16 +65,7 @@ export default function HUD({ className = '' }: HUDProps) {
       {/* 右下角收集品入口 */}
       <div className="absolute bottom-4 right-4 z-20">
         <button
-          onClick={() => {
-            const collected = useCollectiblesStore.getState();
-            const items = Object.values(collected.items).filter(i => i.unlocked);
-            if (items.length > 0) {
-              const names = items.map(i => `  • ${i.name}: ${i.description}`).join('\n');
-              alert(`✨ 旅行册 - 已收集 ${items.length}/8 件\n\n${names}\n\n收集进度: ${getProgress()}%`);
-            } else {
-              alert('✨ 旅行册\n\n你还没有收集到任何物品。\n在旅途中仔细观察，或许会有发现。');
-            }
-          }}
+          onClick={() => setShowAlbum(true)}
           className="bg-black/40 backdrop-blur-sm px-3 py-2 rounded-lg text-white/70 text-sm
                      hover:bg-black/60 hover:text-white transition-all duration-300 font-serif"
         >
@@ -95,6 +89,9 @@ export default function HUD({ className = '' }: HUDProps) {
           ⚙
         </button>
       </div>
+
+      {/* 旅行册弹窗 */}
+      {showAlbum && <TravelAlbum onClose={() => setShowAlbum(false)} />}
     </div>
   );
 }

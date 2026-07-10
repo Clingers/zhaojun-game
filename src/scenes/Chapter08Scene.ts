@@ -5,7 +5,6 @@ import { AudioManager } from '../core/AudioManager';
 
 export default class Chapter08Scene extends BaseScene {
   private textElements: Phaser.GameObjects.Text[] = [];
-  private narrativeDone: boolean = false;
 
   constructor(audioManager: AudioManager) {
     super('chapter08', audioManager);
@@ -22,6 +21,15 @@ export default class Chapter08Scene extends BaseScene {
   }
 
   protected setupInteractions(): void {
+    // 篝火炭收集品 - 在篝火旁
+    this.addHotspot({
+      id: 'campfire_charcoal',
+      x: 500, y: 450, width: 70, height: 50,
+      type: 'collectible',
+      collectibleId: 'campfire_charcoal',
+      label: '篝火炭',
+      oneShot: true,
+    });
     this.startNarrative();
   }
 
