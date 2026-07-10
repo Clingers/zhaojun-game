@@ -97,12 +97,14 @@ export interface HotspotConfig {
   id: string;
   x: number; y: number;
   width: number; height: number;
-  type: 'collectible' | 'observation' | 'dialogue';
+  type: 'collectible' | 'observation' | 'dialogue' | 'continue';
   label?: string;
   collectibleId?: string;
   narrativeText?: string;
   /** 交互一次后是否消失 */
   oneShot?: boolean;
+  /** 点击此热区后跳转到下一章（用于"继续前行"按钮） */
+  onContinue?: string;
 }
 
 export interface CollectibleItem {

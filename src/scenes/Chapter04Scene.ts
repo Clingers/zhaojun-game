@@ -19,7 +19,7 @@ export default class Chapter04Scene extends BaseScene {
     this.addHotspot({ id: 'yellow_river_sand', x: 350, y: 500, width: 70, height: 50, type: 'collectible', collectibleId: 'yellow_river_sand', label: '河滩', oneShot: true });
     this.addHotspot({ id: 'river', x: 650, y: 400, width: 160, height: 80, type: 'observation', label: '黄河', narrativeText: '黄河水浑浊而沉重，像是大地流出的血液。她从未见过如此宽阔的河流——过了黄河，长安就真的在身后了。', oneShot: true });
     this.addHotspot({ id: 'ferrymen', x: 300, y: 540, width: 90, height: 50, type: 'observation', label: '船夫', narrativeText: '壮汉们赤着上身，喊着整齐的号子。他们的脊背被太阳晒得黝黑，在河水的反光中发亮。', oneShot: true });
-    this.input.once('pointerdown', () => { this.showDialogue('过了黄河，便是塞外。\n—— 点击继续前行', 0); this.input.once('pointerdown', () => this.transitionTo('chapter05')); });
+    this.addHotspot({ id: 'continue_btn', x: 640, y: 620, width: 260, height: 50, type: 'continue', label: '继续前行 →', narrativeText: '过了黄河，便是塞外。', oneShot: true, onContinue: 'chapter05' });
   }
   protected onInteraction(_t: string) {}
   private showStorySequence(lines: string[], onComplete: () => void) {

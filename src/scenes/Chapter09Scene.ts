@@ -30,10 +30,20 @@ export default class Chapter09Scene extends BaseScene {
 '匈奴王庭比想象中安静。',
 '没有盛大的庆典，只有风。',
 '她下了马车，踩在陌生的土地上。',
-'—— 点击继续前行 ——'
+'—— 四处看看，再继续前行 ——'
     ];
     this.showStorySequence(lines, () => {
-      this.transitionTo('chapter10');
+      this.narrativeDone = true;
+      this.spawnHotspots();
+    });
+  }
+
+  private spawnHotspots() {
+    this.addHotspot({
+      id: 'continue_btn', x: 640, y: 620, width: 260, height: 50,
+      type: 'continue', label: '继续前行 →',
+      narrativeText: '这就是她以后要生活的地方。',
+      oneShot: true, onContinue: 'chapter10',
     });
   }
 

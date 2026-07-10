@@ -40,10 +40,22 @@ export default class Chapter08Scene extends BaseScene {
 '一位匈奴老人闭着眼，唱起古老的歌。',
 '她听不懂歌词，但听懂了旋律。',
 '那是草原的声音。',
-'—— 点击继续前行 ——'
+'—— 四处看看，再继续前行 ——'
     ];
     this.showStorySequence(lines, () => {
-      this.transitionTo('chapter09');
+      this.narrativeDone = true;
+      this.spawnHotspots();
+    });
+  }
+
+  private spawnHotspots() {
+    // 篝火炭收集品已在 setupInteractions 中添加
+    // 继续前行按钮
+    this.addHotspot({
+      id: 'continue_btn', x: 640, y: 620, width: 260, height: 50,
+      type: 'continue', label: '继续前行 →',
+      narrativeText: '天亮了，继续上路。',
+      oneShot: true, onContinue: 'chapter09',
     });
   }
 

@@ -56,10 +56,11 @@ export default class Chapter02Scene extends BaseScene {
       narrativeText: '马车在沙土路上颠簸了一下。车辕上的铜铃叮当作响，像是一路在为谁送行。',
       oneShot: true,
     });
-
-    this.input.once('pointerdown', () => {
-      this.showDialogue('前面还有很远的路。\n—— 点击继续前行', 0);
-      this.input.once('pointerdown', () => this.transitionTo('chapter03'));
+    this.addHotspot({
+      id: 'continue_btn', x: 640, y: 620, width: 260, height: 50,
+      type: 'continue', label: '继续前行 →',
+      narrativeText: '前面还有很远的路。',
+      oneShot: true, onContinue: 'chapter03',
     });
   }
 

@@ -13,19 +13,19 @@ export default class Chapter07Scene extends BaseScene {
   protected setupInteractions() { this.startNarrative(); }
   private startNarrative() {
     const lines = [
-      '\u66b4\u98ce\u96ea\u6575\u9003\u5728\u4e0a\u6c34\u7684\u534e\u5b50\u3002',
-      '\u5929\u7a7a\u7eac\u4e5f\u65e0\u9ad8\u5c1d\u90fd\u5462\u3002',
-      '\u96ea\u8599\u5c06\u4e91\u9700\u751f\u8c31\u91cc\u7684\u971c\u4ee5\u963b\u5b40\u3002',
-      '\u4e00\u81f4\u767e\u6c61\u5b9e\u6b63\u590f\u673a\u69fd\u9189\u81f3\u3002',
-      '\u2014\u2014 \u5c06\u6307\u5bf9\u5176\u5473\u5403\u56e0\u52f5\u5f4e\u6267\u5229\u7684\u5f73\u5f6e\u6076\u571f\u4e00\u6392\u5f71\u666f —\u2014'
+      '暴风雪突如其来。',
+      '天空铅灰色的，什么都看不见。',
+      '雪粒打在脸上，像细沙一样疼。',
+      '车队停下来，所有人挤在一起。',
+      '—— 四处看看，再继续前行 ——'
     ];
     this.showStorySequence(lines, () => { this.narrativeDone = true; this.spawnHotspots(); });
   }
   private spawnHotspots() {
-    this.addHotspot({ id: 'snowflake', x: 500, y: 380, width: 50, height: 50, type: 'collectible', collectibleId: 'snowflake', label: '\u96ea\u82b1', oneShot: true });
-    this.addHotspot({ id: 'storm', x: 300, y: 200, width: 200, height: 150, type: 'observation', label: '\u96ea\u98ce', narrativeText: '\u66b4\u98ce\u96ea\u5929\u6865\u754c\u7684\u5de6\u4e0a\u6db5\u500b\u6709\u4e00\u4e2a\u5c0f\u5927\u5730\u9769\u5f3a\u529b\u5904\u3002\u5e2d\u65e5\u8d39\u6bc1\u6253\u5439\u6274\u670d\u7b49.', oneShot: true });
-    this.addHotspot({ id: 'tent', x: 800, y: 500, width: 120, height: 80, type: 'observation', label: '\u5b9c\u5bbf', narrativeText: '\u538b\u5bb6\u4e48\u5ea6\u63d0\u6291\u975e\u5143\u9700\u914d\u6700\u519b\u5c5e\u8349\u534f\u80cc\u5bb3\u6d41\u95f4\u6a21\u79c0\u7535', oneShot: true });
-    this.input.once('pointerdown', () => { this.showDialogue('\u96ea\u5185\u7684\u4fbf\u62c5\u5305\u626c\u4e2a\u4e0e\u8fb9\u88ab\u5f15\u8d8b', 0); this.input.once('pointerdown', () => this.transitionTo('chapter08')); });
+    this.addHotspot({ id: 'snowflake', x: 500, y: 380, width: 50, height: 50, type: 'collectible', collectibleId: 'snowflake', label: '雪花', oneShot: true });
+    this.addHotspot({ id: 'storm', x: 300, y: 200, width: 200, height: 150, type: 'observation', label: '雪风', narrativeText: '暴风雪中的风有一种奇特的力量——它不冷，但能穿透一切。她裹紧了外衣，把脸埋进领口里。', oneShot: true });
+    this.addHotspot({ id: 'tent', x: 800, y: 500, width: 120, height: 80, type: 'observation', label: '营地', narrativeText: '临时搭起的帐篷在风中摇晃。有人递给她一碗热茶，她接过来，手指碰到碗壁时才发现自己已经冻僵了。', oneShot: true });
+    this.addHotspot({ id: 'continue', x: 640, y: 620, width: 300, height: 60, type: 'observation', label: '继续前行', narrativeText: '暴风雪终会过去。', oneShot: true, onContinue: 'chapter08' });
   }
   protected onInteraction(_t: string) {}
   private showStorySequence(lines: string[], onComplete: () => void) {

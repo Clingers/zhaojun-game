@@ -67,20 +67,37 @@ export default abstract class BaseScene extends Phaser.Scene {
     const zone = this.add.zone(cfg.x, cfg.y, cfg.width, cfg.height)
       .setInteractive({ useHandCursor: true });
 
+    const isCollectible = cfg.type === 'collectible';
+    const isContinue = cfg.type === 'continue';
+
     // 发光指示环
     const glow = this.add.graphics();
-    glow.lineStyle(2, 0xffd700, 0.4);
+    glow.lineStyle(2, isContinue ? 0xffffff : 0xffd700, 0.4);
     glow.strokeRoundedRect(
       cfg.x - cfg.width / 2, cfg.y - cfg.height / 2,
       cfg.width, cfg.height, 6
     );
-    glow.setAlpha(0);
+    // 收集品和继续按钮默认可见，观察点默认隐藏
+    glow.setAlpha(isCollectible || isContinue ? 0.4 : 0);
 
     // 标签文字
     const label = this.add.text(cfg.x, cfg.y - cfg.height / 2 - 12, cfg.label || '', {
-      fontSize: '14px', color: '#ffd700', fontFamily: 'serif',
-      backgroundColor: '#00000066', padding: { x: 6, y: 2 },
-    }).setOrigin(0.5).setAlpha(0);
+      fontSize: isContinue ? '18px' : '14px', color: isContinue ? '#ffffff' : '#ffd700', fontFamily: 'serif',
+      backgroundColor: isContinue ? '#00000099' : '#00000066', padding: { x: 6, y: 2 },
+    }).setOrigin(0.5);
+    label.setAlpha(isCollectible || isContinue ? 0.6 : 0);
+
+    // 收集品: 脉冲动画让玩家注意到
+    if (isCollectible) {
+      this.tweens.add({
+        targets: [glow, label],
+        alpha: { from: 0.4, to: 0.8 },
+        duration: 1500,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      });
+    }
 
     // 悬停效果
     zone.on('pointerover', () => {
@@ -88,8 +105,13 @@ export default abstract class BaseScene extends Phaser.Scene {
       label.setAlpha(1);
     });
     zone.on('pointerout', () => {
-      glow.setAlpha(0);
-      label.setAlpha(0);
+      if (!isCollectible && !isContinue) {
+        glow.setAlpha(0);
+        label.setAlpha(0);
+      } else {
+        glow.setAlpha(0.4);
+        label.setAlpha(0.6);
+      }
     });
 
     // 点击处理
@@ -113,6 +135,14 @@ export default abstract class BaseScene extends Phaser.Scene {
     switch (cfg.type) {
       case 'collectible':
         this.collectItem(cfg);
+        break;
+      case 'continue':
+        if (cfg.onContinue) {
+          this.showDialogue('继续前行...', 1500);
+          this.time.delayedCall(1600, () => {
+            this.transitionTo(cfg.onContinue!);
+          });
+        }
         break;
       case 'observation':
         if (cfg.narrativeText) {

@@ -26,7 +26,7 @@ export default class Chapter03Scene extends BaseScene {
     this.addHotspot({ id: 'qin_forest_leaf', x: 500, y: 380, width: 80, height: 60, type: 'collectible', collectibleId: 'qin_forest_leaf', label: '落叶', oneShot: true });
     this.addHotspot({ id: 'rain', x: 800, y: 300, width: 100, height: 150, type: 'observation', label: '雨幕', narrativeText: '雨越下越大了。车窗外的山色被雨幕模糊成一团墨绿。她听见雨水顺着车檐滴落的声音——一滴，一滴，像是有人在数着什么。', oneShot: true });
     this.addHotspot({ id: 'mountain', x: 200, y: 350, width: 120, height: 100, type: 'observation', label: '远山', narrativeText: '秦岭的山脊在雨中若隐若现。翻过这座山，就是另一个世界了。', oneShot: true });
-    this.input.once('pointerdown', () => { this.showDialogue('雨不会停，路还要走。\n—— 点击继续前行', 0); this.input.once('pointerdown', () => this.transitionTo('chapter04')); });
+    this.addHotspot({ id: 'continue_btn', x: 640, y: 620, width: 260, height: 50, type: 'continue', label: '继续前行 →', narrativeText: '雨不会停，路还要走。', oneShot: true, onContinue: 'chapter04' });
   }
 
   protected onInteraction(_t: string) {}

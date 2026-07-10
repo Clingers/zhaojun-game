@@ -73,12 +73,15 @@ export default class Chapter01Scene extends BaseScene {
       oneShot: true,
     });
 
-    // 观察完后出现"继续前行"提示
-    this.input.once('pointerdown', () => {
-      this.showDialogue('是时候出发了。\n—— 点击继续前行', 0);
-      this.input.once('pointerdown', () => {
-        this.transitionTo('chapter02');
-      });
+    // 继续前行按钮
+    this.addHotspot({
+      id: 'continue_btn',
+      x: 640, y: 620, width: 260, height: 50,
+      type: 'continue',
+      label: '继续前行 →',
+      narrativeText: '是时候出发了。',
+      oneShot: true,
+      onContinue: 'chapter02',
     });
   }
 
