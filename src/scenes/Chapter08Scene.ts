@@ -4,6 +4,14 @@ import BaseScene from './BaseScene';
 import { AudioManager } from '../core/AudioManager';
 
 export default class Chapter08Scene extends BaseScene {
+  protected ambientTexts: string[] = [
+    '篝火发出噼啪的声响，火星升到空中，和星星混在一起。',
+    '老人的歌声还在继续——旋律简单，但有一种说不出的苍凉。',
+    '火光照在每个人的脸上，让所有的面孔都变成了暖橙色。',
+    '有人往火里添了一根干柴，火焰猛地窜高了一下。',
+    '夜空中星星很亮——比中原的星星亮得多，像是有人在天上点了一万盏灯。',
+  ];
+
   constructor(audioManager: AudioManager) {
     super('chapter08', audioManager);
   }
@@ -19,15 +27,24 @@ export default class Chapter08Scene extends BaseScene {
   }
 
   protected setupInteractions(): void {
-    // 篝火炭收集品 - 在篝火旁
+    // 线索：火堆里的火星
     this.addHotspot({
-      id: 'campfire_charcoal',
-      x: 500, y: 450, width: 70, height: 50,
-      type: 'collectible',
-      collectibleId: 'campfire_charcoal',
-      label: '篝火炭',
+      id: 'charcoal_clue', x: 520, y: 460, width: 40, height: 30,
+      type: 'clue', label: '火星',
+      narrativeText: '火堆里迸出一颗火星，落在旁边的地上。火星熄灭后，地上留下了一块暗红色的炭——还在微微发着光。',
+      revealsCollectible: 'campfire_charcoal',
       oneShot: true,
     });
+
+    // 隐藏收集品：篝火炭
+    this.addHotspot({
+      id: 'campfire_charcoal', x: 500, y: 450, width: 70, height: 50,
+      type: 'collectible', collectibleId: 'campfire_charcoal',
+      label: '篝火炭',
+      initiallyHidden: true,
+      oneShot: true,
+    });
+
     this.startNarrative();
   }
 
@@ -47,12 +64,26 @@ export default class Chapter08Scene extends BaseScene {
   }
 
   private spawnHotspots() {
-    // 关键选择：与陌生人交流还是独处
+    // 无标记探索点：夜空
     this.addHotspot({
-      id: 'ch08_choice',
-      x: 640, y: 500, width: 420, height: 60,
-      type: 'choice',
-      label: '做出选择',
+      id: 'stars', x: 800, y: 200, width: 100, height: 80,
+      type: 'observation',
+      narrativeText: '草原的夜空没有一丝云，星星密密麻麻地铺满了整个天穹。她从未见过这么多星星——像是有人在头顶撒了一把碎钻。',
+      oneShot: true,
+    });
+
+    // 无标记探索点：老人
+    this.addHotspot({
+      id: 'old_man', x: 350, y: 380, width: 60, height: 70,
+      type: 'observation',
+      narrativeText: '唱歌的老人闭着眼睛，脸上的皱纹在火光中显得很深。他的手指在膝盖上轻轻打着节拍——那是草原的节奏。',
+      oneShot: true,
+    });
+
+    // 关键选择
+    this.addHotspot({
+      id: 'ch08_choice', x: 640, y: 500, width: 420, height: 60,
+      type: 'choice', label: '做出选择',
       narrativeText: '火光中，一个匈奴士兵朝你笑了笑。你想怎么做？',
       choices: [
         {
@@ -72,7 +103,7 @@ export default class Chapter08Scene extends BaseScene {
   }
 
   protected onInteraction(target: string): void {
-    // TODO: 章节特定交互（收集品、对话等）
+    // TODO: 章节特定交互
   }
 
   protected playAmbientAudio() {

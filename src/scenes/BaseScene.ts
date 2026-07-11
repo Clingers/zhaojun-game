@@ -14,6 +14,9 @@ export default abstract class BaseScene extends Phaser.Scene {
   protected hotspotLabels: Phaser.GameObjects.Text[] = [];
   protected narrativeDone: boolean = false;
 
+  /** 子类可覆写：空白区域点击时随机展示的环境描述 */
+  protected ambientTexts: string[] = [];
+
   // 隐藏式继续按钮相关
   private continueBtnZone: Phaser.GameObjects.Zone | null = null;
   private continueBtnGlow: Phaser.GameObjects.Graphics | null = null;
@@ -23,6 +26,17 @@ export default abstract class BaseScene extends Phaser.Scene {
   private hasCollectibleInChapter: boolean = false;
   private totalObservationCount: number = 0;
   private hintShown: boolean = false;
+
+  // 隐藏收集品相关（initiallyHidden）
+  private hiddenCollectibles: Map<string, {
+    zone: Phaser.GameObjects.Zone;
+    glow: Phaser.GameObjects.Graphics;
+    label: Phaser.GameObjects.Text;
+    icon?: Phaser.GameObjects.Image;
+  }> = new Map();
+
+  // 空白区域点击防刷
+  private lastAmbientTime: number = 0;
 
   // 事件回调
   private dialogueCallback?: (event: DialogueEvent) => void;
@@ -72,10 +86,19 @@ export default abstract class BaseScene extends Phaser.Scene {
     this.hasCollectibleInChapter = false;
     this.totalObservationCount = 0;
     this.hintShown = false;
+    this.hiddenCollectibles.clear();
+    this.lastAmbientTime = 0;
 
     this.loadBackground();
     this.setupInteractions();
     this.playAmbientAudio();
+
+    // 注册空白区域点击（延迟一帧避免与热点点击冲突）
+    this.time.delayedCall(100, () => {
+      this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+        this.onAmbientClick(pointer);
+      });
+    });
 
     // 发出章节开始事件
     this.events.emit('chapter:start', { chapterId: this.chapterId });
@@ -84,17 +107,94 @@ export default abstract class BaseScene extends Phaser.Scene {
   protected abstract loadBackground(): void;
   protected abstract setupInteractions(): void;
 
+  // ──── 空白区域探索 ────
+
+  /** 空白区域点击处理 */
+  private onAmbientClick(pointer: Phaser.Input.Pointer) {
+    if (this.ambientTexts.length === 0) return;
+    if (this.narrativeDone === false) return; // 叙事中不触发
+
+    // 检查是否点到了某个热点
+    let hitHotspot = false;
+    for (const zone of this.hotspots) {
+      if (zone.visible && zone.input && zone.input.enabled) {
+        const bounds = zone.getBounds();
+        if (bounds.contains(pointer.x, pointer.y)) {
+          hitHotspot = true;
+          break;
+        }
+      }
+    }
+    if (hitHotspot) return;
+
+    // 防刷：至少间隔 3 秒
+    const now = Date.now();
+    if (now - this.lastAmbientTime < 3000) return;
+    this.lastAmbientTime = now;
+
+    // 随机选一条环境描述
+    const text = this.ambientTexts[Math.floor(Math.random() * this.ambientTexts.length)];
+    this.showDialogue(text, 3500);
+  }
+
+  // ──── 揭示隐藏收集品 ────
+
+  /** 揭示一个隐藏收集品 */
+  protected revealCollectible(hotspotId: string) {
+    const hidden = this.hiddenCollectibles.get(hotspotId);
+    if (!hidden) return;
+
+    const { zone, glow, label, icon } = hidden;
+
+    // 显示并启用交互
+    zone.setVisible(true);
+    zone.setInteractive({ useHandCursor: true });
+    glow.setAlpha(0);
+    label.setAlpha(0);
+
+    // 揭示动画：淡入 + 放大
+    this.tweens.add({
+      targets: [glow, label],
+      alpha: { from: 0, to: 0.8 },
+      duration: 600,
+      ease: 'Power2',
+    });
+
+    if (icon) {
+      icon.setVisible(true);
+      icon.setScale(0.1);
+      icon.setAlpha(0);
+      this.tweens.add({
+        targets: icon,
+        scale: 0.45,
+        alpha: 0.9,
+        duration: 800,
+        ease: 'Back.easeOut',
+      });
+    }
+
+    // 揭示后启动脉冲动画
+    this.tweens.add({
+      targets: [glow, label],
+      alpha: { from: 0.4, to: 0.8 },
+      duration: 1500,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+      delay: 600,
+    });
+  }
+
   // ──── 热区交互系统 ────
 
   /** 创建一个可交互热区 */
   protected addHotspot(cfg: HotspotConfig) {
-    const zone = this.add.zone(cfg.x, cfg.y, cfg.width, cfg.height)
-      .setInteractive({ useHandCursor: true });
-
     const isCollectible = cfg.type === 'collectible';
     const isContinue = cfg.type === 'continue';
     const isChoice = cfg.type === 'choice';
     const isObservation = cfg.type === 'observation';
+    const isClue = cfg.type === 'clue';
+    const isHidden = cfg.initiallyHidden === true;
 
     if (isCollectible) {
       this.hasCollectibleInChapter = true;
@@ -103,28 +203,54 @@ export default abstract class BaseScene extends Phaser.Scene {
       this.totalObservationCount++;
     }
 
+    // 无标记探索点：不显示光晕和标签
+    const isUnmarked = isObservation && !cfg.label;
+
+    const zone = this.add.zone(cfg.x, cfg.y, cfg.width, cfg.height);
+
+    // 隐藏收集品初始不可交互
+    if (isHidden) {
+      zone.setVisible(false);
+    } else {
+      zone.setInteractive({ useHandCursor: true });
+    }
+
     // 发光指示环
     const glow = this.add.graphics();
-    glow.lineStyle(2, isContinue ? 0xffffff : isChoice ? 0x88ccff : 0xffd700, 0.4);
+    glow.lineStyle(2, isContinue ? 0xffffff : isChoice ? 0x88ccff : isClue ? 0x88ff88 : 0xffd700, 0.4);
     glow.strokeRoundedRect(
       cfg.x - cfg.width / 2, cfg.y - cfg.height / 2,
       cfg.width, cfg.height, 6
     );
-    // 收集品和选择默认可见，继续按钮默认隐藏，观察点默认隐藏
-    glow.setAlpha(isCollectible || isChoice ? 0.4 : 0);
+
+    if (isHidden) {
+      glow.setAlpha(0);
+    } else if (isUnmarked) {
+      glow.setAlpha(0); // 无标记探索点默认不可见
+    } else {
+      glow.setAlpha(isCollectible || isChoice || isClue ? 0.4 : 0);
+    }
 
     // 标签文字
-    const label = this.add.text(cfg.x, cfg.y - cfg.height / 2 - 12, cfg.label || '', {
-      fontSize: isContinue ? '18px' : isChoice ? '16px' : '14px',
-      color: isContinue ? '#ffffff' : isChoice ? '#88ccff' : '#ffd700',
+    const labelText = cfg.label || '';
+    const label = this.add.text(cfg.x, cfg.y - cfg.height / 2 - 12, labelText, {
+      fontSize: isContinue ? '18px' : isChoice ? '16px' : isClue ? '15px' : '14px',
+      color: isContinue ? '#ffffff' : isChoice ? '#88ccff' : isClue ? '#88ff88' : '#ffd700',
       fontFamily: 'serif',
-      backgroundColor: isContinue ? '#00000099' : isChoice ? '#00336699' : '#00000066',
+      backgroundColor: isContinue ? '#00000099' : isChoice ? '#00336699' : isClue ? '#00330099' : '#00000066',
       padding: { x: 6, y: 2 },
     }).setOrigin(0.5);
-    label.setAlpha(isCollectible || isChoice ? 0.6 : 0);
 
-    // 收集品/选择: 脉冲动画让玩家注意到
-    if (isCollectible || isChoice) {
+    if (isHidden) {
+      label.setAlpha(0);
+    } else if (isUnmarked) {
+      label.setAlpha(0);
+    } else {
+      label.setAlpha(isCollectible || isChoice || isClue ? 0.6 : 0);
+    }
+
+    // 脉冲动画（非隐藏、非无标记）
+    if (!isHidden && !isUnmarked && (isCollectible || isChoice || isClue)) {
       this.tweens.add({
         targets: [glow, label],
         alpha: { from: 0.4, to: 0.8 },
@@ -135,39 +261,50 @@ export default abstract class BaseScene extends Phaser.Scene {
       });
     }
 
-    // 收集品: 显示物品 SVG 图标
+    // 收集品图标
+    let icon: Phaser.GameObjects.Image | undefined;
     if (isCollectible && cfg.collectibleId) {
-      const icon = this.add.image(cfg.x, cfg.y - cfg.height / 2 - 36, cfg.collectibleId)
+      icon = this.add.image(cfg.x, cfg.y - cfg.height / 2 - 36, cfg.collectibleId)
         .setScale(0.45)
         .setAlpha(0.9)
         .setDepth(1);
-      this.tweens.add({
-        targets: icon,
-        alpha: { from: 0.7, to: 1 },
-        scale: { from: 0.42, to: 0.48 },
-        duration: 1800,
-        yoyo: true,
-        repeat: -1,
-        ease: 'Sine.easeInOut',
-      });
+
+      if (isHidden) {
+        icon.setVisible(false);
+      } else {
+        this.tweens.add({
+          targets: icon,
+          alpha: { from: 0.7, to: 1 },
+          scale: { from: 0.42, to: 0.48 },
+          duration: 1800,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      }
     }
 
-    // 悬停效果
-    zone.on('pointerover', () => {
-      glow.setAlpha(1);
-      label.setAlpha(1);
-    });
-    zone.on('pointerout', () => {
-      if (!isCollectible && !isChoice && !isContinue) {
-        glow.setAlpha(0);
-        label.setAlpha(0);
-      } else if (isContinue) {
-        // 继续按钮保持当前可见状态（由 checkContinueUnlock 控制）
-      } else {
-        glow.setAlpha(0.4);
-        label.setAlpha(0.6);
-      }
-    });
+    // 悬停效果（隐藏收集品和无标记点有不同行为）
+    if (!isHidden) {
+      zone.on('pointerover', () => {
+        glow.setAlpha(1);
+        if (!isUnmarked) label.setAlpha(1);
+      });
+      zone.on('pointerout', () => {
+        if (isUnmarked) {
+          glow.setAlpha(0);
+          label.setAlpha(0);
+        } else if (!isCollectible && !isChoice && !isClue && !isContinue) {
+          glow.setAlpha(0);
+          label.setAlpha(0);
+        } else if (isContinue) {
+          // 继续按钮保持当前可见状态
+        } else {
+          glow.setAlpha(0.4);
+          label.setAlpha(0.6);
+        }
+      });
+    }
 
     // 点击处理
     zone.on('pointerdown', () => {
@@ -184,7 +321,12 @@ export default abstract class BaseScene extends Phaser.Scene {
     this.hotspotGlows.push(glow);
     this.hotspotLabels.push(label);
 
-    // 如果是继续按钮，保存引用并默认隐藏
+    // 保存隐藏收集品引用
+    if (isHidden && isCollectible) {
+      this.hiddenCollectibles.set(cfg.id, { zone, glow, label, icon });
+    }
+
+    // 继续按钮默认隐藏
     if (isContinue) {
       this.continueBtnZone = zone;
       this.continueBtnGlow = glow;
@@ -205,7 +347,6 @@ export default abstract class BaseScene extends Phaser.Scene {
 
     // 如果本章没有收集品，需要至少点一个观察点才能解锁
     if (!this.hasCollectibleInChapter && this.totalObservationCount > 0 && this.observedThisChapter.size === 0) {
-      // 给一次提示
       if (!this.hintShown) {
         this.hintShown = true;
         this.showDialogue('四周似乎还有什么值得一看的地方...', 3000);
@@ -219,7 +360,6 @@ export default abstract class BaseScene extends Phaser.Scene {
     this.continueBtnGlow.setAlpha(0.4);
     this.continueBtnLabel.setAlpha(0.6);
 
-    // 播放出现动画
     this.tweens.add({
       targets: [this.continueBtnGlow, this.continueBtnLabel],
       alpha: { from: 0, to: 0.6 },
@@ -247,7 +387,6 @@ export default abstract class BaseScene extends Phaser.Scene {
         if (cfg.narrativeText) {
           this.showDialogue(cfg.narrativeText, 4000);
         }
-        // 每次观察后检查是否可以解锁继续按钮
         this.checkContinueUnlock();
         break;
       case 'dialogue':
@@ -260,6 +399,16 @@ export default abstract class BaseScene extends Phaser.Scene {
           this.showChoice(cfg);
         }
         break;
+      case 'clue':
+        if (cfg.narrativeText) {
+          this.showDialogue(cfg.narrativeText, 3000);
+        }
+        if (cfg.revealsCollectible) {
+          this.time.delayedCall(3200, () => {
+            this.revealCollectible(cfg.revealsCollectible!);
+          });
+        }
+        break;
     }
   }
 
@@ -267,18 +416,15 @@ export default abstract class BaseScene extends Phaser.Scene {
   private showChoice(cfg: HotspotConfig) {
     const choices = cfg.choices!;
 
-    // 创建半透明背景
     const overlay = this.add.rectangle(640, 360, 1280, 720, 0x000000, 0.6)
-      .setInteractive() // 阻止点击穿透
+      .setInteractive()
       .setDepth(10);
 
-    // 提示文字
     const prompt = this.add.text(640, 260, cfg.narrativeText || '做出你的选择：', {
       fontSize: '24px', color: '#ffffff', fontFamily: 'serif',
       align: 'center', wordWrap: { width: 800 },
     }).setOrigin(0.5).setDepth(11);
 
-    // 选项按钮
     const buttons: Phaser.GameObjects.Container[] = [];
     const startY = 340;
     const spacing = 90;
@@ -286,11 +432,9 @@ export default abstract class BaseScene extends Phaser.Scene {
     choices.forEach((choice, i) => {
       const y = startY + i * spacing;
 
-      // 按钮背景
       const bg = this.add.rectangle(0, 0, 500, 60, 0x003366, 0.9)
         .setStrokeStyle(2, 0x88ccff, 0.8);
 
-      // 按钮文字
       const txt = this.add.text(0, 0, choice.text, {
         fontSize: '22px', color: '#ffffff', fontFamily: 'serif',
         align: 'center', wordWrap: { width: 460 },
@@ -301,26 +445,20 @@ export default abstract class BaseScene extends Phaser.Scene {
         .setInteractive({ useHandCursor: true })
         .setDepth(11);
 
-      // 悬停效果
       container.on('pointerover', () => bg.setFillStyle(0x005599, 1));
       container.on('pointerout', () => bg.setFillStyle(0x003366, 0.9));
 
-      // 点击选择
       container.on('pointerdown', () => {
-        // 记录选择
         useGameStore.getState().makeChoice(cfg.id, choice.id);
 
-        // 销毁所有 UI
         overlay.destroy();
         prompt.destroy();
         buttons.forEach(b => b.destroy(true));
 
-        // 显示选择结果
         if (choice.resultText) {
           this.showDialogue(choice.resultText, 3000);
         }
 
-        // 跳转
         if (cfg.onChoice && cfg.onChoice[choice.id]) {
           this.time.delayedCall(3200, () => {
             this.transitionTo(cfg.onChoice![choice.id]);
@@ -340,11 +478,9 @@ export default abstract class BaseScene extends Phaser.Scene {
     const item = store.items[cfg.collectibleId as keyof typeof store.items];
     if (!item || item.unlocked) return;
 
-    // 存入 store
     store.unlock(cfg.collectibleId);
     this.collectedThisChapter = true;
 
-    // 收集动画：光点飞入
     const particle = this.add.circle(cfg.x, cfg.y, 6, 0xffd700);
     this.tweens.add({
       targets: particle,
@@ -355,7 +491,6 @@ export default abstract class BaseScene extends Phaser.Scene {
 
     this.showDialogue(`📖 发现：${item.name}`, 2500);
 
-    // 收集后检查是否可以解锁继续按钮
     this.checkContinueUnlock();
   }
 
@@ -427,7 +562,6 @@ export default abstract class BaseScene extends Phaser.Scene {
       });
     }, duration);
 
-    // 同时发送事件给 React 侧
     if (this.dialogueCallback) {
       this.dialogueCallback({ type: 'dialogue', text, duration });
     }

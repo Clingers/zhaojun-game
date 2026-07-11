@@ -1,25 +1,33 @@
-# P0 Plan: 关键选择分支 + 隐藏式"继续前行"
+# P1 Plan: 收集品解谜 + 探索增强
 
 ## 改动清单
 
-### 1. 类型定义（types/index.ts）
-- 新增 `ChoiceOption` 接口（id, text）
-- `HotspotConfig.type` 增加 `'choice'`
-- `HotspotConfig` 增加 `choices?: ChoiceOption[]` 和 `onChoice?: Record<string, string>`
+### 1. 类型扩展（types/index.ts）
+- `HotspotConfig.type` 增加 `'clue'`
+- `HotspotConfig` 新增 `initiallyHidden?: boolean`（收集品默认隐藏）
+- `HotspotConfig` 新增 `revealsCollectible?: string`（clue 指向要揭示的收集品 hotspot id）
 
-### 2. 状态管理（gameStore.ts）
-- 新增 `choices: Record<string, string>` 状态
-- 新增 `makeChoice(hotspotId, optionId)` action
-- 新增 `getChoice(hotspotId)` getter
+### 2. BaseScene 改造
+- **clue 类型处理**：点击 clue → 显示叙事文字 → 揭示对应收集品（缩放动画）
+- **initiallyHidden 收集品**：创建时全部隐藏且不可交互，被揭示后才出现
+- **空白区域探索**：捕获非热区点击，随机展示环境描述文字
+- 新增 `ambientTexts: string[]` 供子类覆写
+- 新增 `unmarkedHotspots: HotspotConfig[]` 支持无标记探索点
 
-### 3. 场景基类（BaseScene.ts）
-- choice 类型处理：展示两个选项按钮，点击后记录选择
-- 隐藏式继续：observationsClicked 集合追踪已点观察点
-- continue 按钮默认隐藏，collected + observed 条件满足后渐显
+### 3. 各章节更新
+每章需要：
+- 收集品改为隐藏式，加一个 clue 热点
+- 2~3 个无标记探索点（hover 才显示）
+- 3~5 条环境描述文本（点空白区域随机触发）
 
-### 4. 章节修改
-- Ch05 雁门关：新增 choice "回头看中原" vs "头也不回"
-- Ch06 草原：根据 Ch05 选择展示不同叙事文本
-- Ch08 篝火：新增 choice "跟匈奴士兵说话" vs "独自烤火"
-- Ch09/10：根据 Ch08 选择展示不同结局基调
-- 所有章节：continue 按钮默认 hidden → 条件满足后 visible
+### 4. 具体 clue 设计
+| 章节 | 收集品 | 线索 | 线索描述 |
+|------|--------|------|----------|
+| Ch01 长安 | 铜镜碎片 | 桌子上有划痕 | "桌面上有一道细细的划痕，像是被什么锋利的东西划过..." |
+| Ch02 渭水 | 圆润石头 | 水边有亮光 | "河滩上有什么东西在阳光下闪烁..." |
+| Ch03 秦岭 | 山树叶 | 雨滴声异常 | "雨声中似乎有树叶被风吹落的声音..." |
+| Ch04 黄河 | 黄河砂 | 脚印 | "岸边有一串脚印通向河滩..." |
+| Ch05 雁门关 | 雁羽 | 地面有东西 | "地上有什么东西在风里轻轻颤动..." |
+| Ch06 草原 | 白鹰羽 | 鹰的影子 | "一只鹰的影子掠过地面..." |
+| Ch07 暴风雪 | 雪花 | 风中有光 | "风雪中似乎有细小的光点在闪烁..." |
+| Ch08 篝火 | 篝火炭 | 火星 | "火堆里迸出一颗火星，落在旁边..." |

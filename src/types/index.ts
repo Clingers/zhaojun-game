@@ -105,7 +105,7 @@ export interface HotspotConfig {
   id: string;
   x: number; y: number;
   width: number; height: number;
-  type: 'collectible' | 'observation' | 'dialogue' | 'continue' | 'choice';
+  type: 'collectible' | 'observation' | 'dialogue' | 'continue' | 'choice' | 'clue';
   label?: string;
   collectibleId?: string;
   narrativeText?: string;
@@ -117,6 +117,10 @@ export interface HotspotConfig {
   choices?: ChoiceOption[];
   /** 每个选项对应的后续目标（choiceId -> nextChapter） */
   onChoice?: Record<string, string>;
+  /** 收集品是否初始隐藏（需要先点击 clue 才出现） */
+  initiallyHidden?: boolean;
+  /** clue 类型热区指向的收集品 hotspot id */
+  revealsCollectible?: string;
 }
 
 export interface CollectibleItem {

@@ -4,6 +4,14 @@ import BaseScene from './BaseScene';
 import { AudioManager } from '../core/AudioManager';
 
 export default class Chapter05Scene extends BaseScene {
+  protected ambientTexts: string[] = [
+    '关门的风很大，吹得旗帜猎猎作响。',
+    '城墙上有士兵在巡逻，他们的盔甲在阳光下闪着冷光。',
+    '远处的山脊线像一道巨大的疤痕，把天和地分开。',
+    '地上有马蹄印和车辙，密密麻麻，分不清哪些是来路，哪些是去路。',
+    '空气中有一股干燥的尘土味——和长安的湿润完全不同。',
+  ];
+
   constructor(am: AudioManager) { super('chapter05', am); }
   preload() { super.preload(); this.load.image('chapter05-bg', '/assets/images/chapter-05/bg.svg'); }
   protected loadBackground() {
@@ -24,16 +32,39 @@ export default class Chapter05Scene extends BaseScene {
     this.showStorySequence(lines, () => { this.narrativeDone = true; this.spawnHotspots(); });
   }
   private spawnHotspots() {
-    this.addHotspot({ id: 'goose_feather', x: 600, y: 300, width: 50, height: 40, type: 'collectible', collectibleId: 'wild_goose_feather', label: '羽毛', oneShot: true });
+    // 线索：地上颤动的羽毛
+    this.addHotspot({
+      id: 'feather_clue', x: 610, y: 310, width: 40, height: 30,
+      type: 'clue', label: '地上的东西',
+      narrativeText: '地上有什么东西在风里轻轻颤动。她弯腰捡起来——是一根大雁的羽毛，还带着温度。',
+      revealsCollectible: 'goose_feather',
+      oneShot: true,
+    });
+
+    // 隐藏收集品：雁羽
+    this.addHotspot({
+      id: 'goose_feather', x: 600, y: 300, width: 50, height: 40,
+      type: 'collectible', collectibleId: 'wild_goose_feather',
+      label: '雁羽',
+      initiallyHidden: true,
+      oneShot: true,
+    });
+
     this.addHotspot({ id: 'gate', x: 640, y: 400, width: 200, height: 200, type: 'observation', label: '城门', narrativeText: '城门在她身后缓缓合拢，发出沉重的金属摩擦声。那声音穿过胸腔，比任何告别都更真实。', oneShot: true });
     this.addHotspot({ id: 'south', x: 200, y: 350, width: 150, height: 100, type: 'observation', label: '南方', narrativeText: '她最后看了一眼南方的天空。天和地在远处连成一线，什么也看不见了。那里有长安，有过去，有她所有知道的东西。', oneShot: true });
 
-    // 关键选择：出关前的心态
+    // 无标记探索点：城墙上的刻字
     this.addHotspot({
-      id: 'ch05_choice',
-      x: 640, y: 500, width: 400, height: 60,
-      type: 'choice',
-      label: '做出选择',
+      id: 'graffiti', x: 750, y: 380, width: 50, height: 40,
+      type: 'observation',
+      narrativeText: '城墙的石砖上有人刻了几个字，笔画很浅，像是用刀尖划的："某年某月，过此关，不复返。"',
+      oneShot: true,
+    });
+
+    // 关键选择
+    this.addHotspot({
+      id: 'ch05_choice', x: 640, y: 500, width: 400, height: 60,
+      type: 'choice', label: '做出选择',
       narrativeText: '出关之前，你心中在想什么？',
       choices: [
         { id: 'look_back', text: '👋 回头看中原——记住故乡的模样', resultText: '她深深吸了一口气，把长安的轮廓刻进记忆里。然后转身，不再回头。' },

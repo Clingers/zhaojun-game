@@ -5,6 +5,14 @@ import { AudioManager } from '../core/AudioManager';
 import { useGameStore } from '../store/gameStore';
 
 export default class Chapter06Scene extends BaseScene {
+  protected ambientTexts: string[] = [
+    '风吹过草原，草浪从脚下一直延伸到天边，像是大地在呼吸。',
+    '远处有一群野马在奔跑，马蹄声闷闷的，像远处的雷声。',
+    '天空中有鹰在盘旋，它的影子在草地上缓缓移动。',
+    '空气中有一股青草的香味，混着泥土的气息。',
+    '这里的天空比中原低——或者说是比中原大。',
+  ];
+
   constructor(am: AudioManager) { super('chapter06', am); }
   preload() { super.preload(); this.load.image('chapter06-bg', '/assets/images/chapter-06/bg.svg'); }
   protected loadBackground() {
@@ -13,7 +21,6 @@ export default class Chapter06Scene extends BaseScene {
   }
   protected setupInteractions() { this.startNarrative(); }
   private startNarrative() {
-    // 读取 Ch05 的选择
     const choice = useGameStore.getState().getChoice('ch05_choice');
 
     const lines: string[] = [];
@@ -42,9 +49,35 @@ export default class Chapter06Scene extends BaseScene {
     this.showStorySequence(lines, () => { this.narrativeDone = true; this.spawnHotspots(); });
   }
   private spawnHotspots() {
-    this.addHotspot({ id: 'eagle_feather', x: 700, y: 280, width: 50, height: 40, type: 'collectible', collectibleId: 'eagle_feather', label: '白羽', oneShot: true });
+    // 线索：鹰的影子
+    this.addHotspot({
+      id: 'eagle_clue', x: 710, y: 290, width: 40, height: 30,
+      type: 'clue', label: '鹰的影子',
+      narrativeText: '一只鹰的影子掠过地面，速度很快。她抬头看——鹰的翅膀在阳光下几乎是透明的。在鹰飞过的地方，地上落着一根白色的羽毛。',
+      revealsCollectible: 'eagle_feather',
+      oneShot: true,
+    });
+
+    // 隐藏收集品：白鹰羽
+    this.addHotspot({
+      id: 'eagle_feather', x: 700, y: 280, width: 50, height: 40,
+      type: 'collectible', collectibleId: 'eagle_feather',
+      label: '白鹰羽',
+      initiallyHidden: true,
+      oneShot: true,
+    });
+
     this.addHotspot({ id: 'sky', x: 400, y: 200, width: 200, height: 150, type: 'observation', label: '天空', narrativeText: '草原的天空和中原完全不同——蓝得近乎不真实。一只鹰在高空盘旋，它的影子在草地上缓缓移动。', oneShot: true });
     this.addHotspot({ id: 'grass', x: 600, y: 450, width: 200, height: 80, type: 'observation', label: '草地', narrativeText: '风吹过草地，草浪从脚下一直延伸到天边。她从未见过这么开阔的地方——开阔得让人有些害怕。', oneShot: true });
+
+    // 无标记探索点：野花
+    this.addHotspot({
+      id: 'wildflower', x: 450, y: 500, width: 40, height: 30,
+      type: 'observation',
+      narrativeText: '草丛中有一朵不知名的紫色小花，在风中摇摇晃晃。她蹲下来看了很久——这么小的花，是怎么在这片大风中活下来的？',
+      oneShot: true,
+    });
+
     this.addHotspot({ id: 'continue_btn', x: 640, y: 620, width: 260, height: 50, type: 'continue', label: '继续前行 →', narrativeText: '草原很大，路还很长。', oneShot: true, onContinue: 'chapter07' });
   }
   protected onInteraction(_t: string) {}
