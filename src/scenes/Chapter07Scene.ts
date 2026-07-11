@@ -25,7 +25,7 @@ export default class Chapter07Scene extends BaseScene {
     this.addHotspot({ id: 'snowflake', x: 500, y: 380, width: 50, height: 50, type: 'collectible', collectibleId: 'snowflake', label: '雪花', oneShot: true });
     this.addHotspot({ id: 'storm', x: 300, y: 200, width: 200, height: 150, type: 'observation', label: '雪风', narrativeText: '暴风雪中的风有一种奇特的力量——它不冷，但能穿透一切。她裹紧了外衣，把脸埋进领口里。', oneShot: true });
     this.addHotspot({ id: 'tent', x: 800, y: 500, width: 120, height: 80, type: 'observation', label: '营地', narrativeText: '临时搭起的帐篷在风中摇晃。有人递给她一碗热茶，她接过来，手指碰到碗壁时才发现自己已经冻僵了。', oneShot: true });
-    this.addHotspot({ id: 'continue', x: 640, y: 620, width: 300, height: 60, type: 'observation', label: '继续前行', narrativeText: '暴风雪终会过去。', oneShot: true, onContinue: 'chapter08' });
+    this.addHotspot({ id: 'continue', x: 640, y: 620, width: 300, height: 60, type: 'continue', label: '继续前行 →', narrativeText: '暴风雪终会过去。', oneShot: true, onContinue: 'chapter08' });
   }
   protected onInteraction(_t: string) {}
   private showStorySequence(lines: string[], onComplete: () => void) {
