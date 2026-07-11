@@ -21,6 +21,8 @@ export default abstract class BaseScene extends Phaser.Scene {
   private collectedThisChapter: boolean = false;
   private observedThisChapter: Set<string> = new Set();
   private hasCollectibleInChapter: boolean = false;
+  private totalObservationCount: number = 0;
+  private hintShown: boolean = false;
 
   // 事件回调
   private dialogueCallback?: (event: DialogueEvent) => void;
@@ -68,6 +70,8 @@ export default abstract class BaseScene extends Phaser.Scene {
     this.collectedThisChapter = false;
     this.observedThisChapter = new Set();
     this.hasCollectibleInChapter = false;
+    this.totalObservationCount = 0;
+    this.hintShown = false;
 
     this.loadBackground();
     this.setupInteractions();
@@ -90,9 +94,13 @@ export default abstract class BaseScene extends Phaser.Scene {
     const isCollectible = cfg.type === 'collectible';
     const isContinue = cfg.type === 'continue';
     const isChoice = cfg.type === 'choice';
+    const isObservation = cfg.type === 'observation';
 
     if (isCollectible) {
       this.hasCollectibleInChapter = true;
+    }
+    if (isObservation) {
+      this.totalObservationCount++;
     }
 
     // 发光指示环
@@ -188,14 +196,22 @@ export default abstract class BaseScene extends Phaser.Scene {
     }
   }
 
-  /** 检查并解锁继续按钮（收集品 + 至少一个观察点） */
+  /** 检查并解锁继续按钮 */
   protected checkContinueUnlock() {
     if (!this.continueBtnZone || !this.continueBtnGlow || !this.continueBtnLabel) return;
 
     // 如果本章有收集品但还没收集，不解锁
     if (this.hasCollectibleInChapter && !this.collectedThisChapter) return;
-    // 如果本章有观察点但还没点过，不解锁
-    if (this.observedThisChapter.size === 0) return;
+
+    // 如果本章有观察点但还没点过，不解锁（没有观察点的章节跳过此条件）
+    if (this.totalObservationCount > 0 && this.observedThisChapter.size === 0) {
+      // 如果已经收集了物品但还没观察，给一次提示
+      if (this.collectedThisChapter && !this.hintShown) {
+        this.hintShown = true;
+        this.showDialogue('四周似乎还有什么值得一看的地方...', 3000);
+      }
+      return;
+    }
 
     // 解锁继续按钮
     this.continueBtnZone.setVisible(true);
