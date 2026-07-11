@@ -4,8 +4,6 @@ import BaseScene from './BaseScene';
 import { AudioManager } from '../core/AudioManager';
 
 export default class Chapter08Scene extends BaseScene {
-  private textElements: Phaser.GameObjects.Text[] = [];
-
   constructor(audioManager: AudioManager) {
     super('chapter08', audioManager);
   }
@@ -17,7 +15,6 @@ export default class Chapter08Scene extends BaseScene {
 
   protected loadBackground() {
     this.background = this.add.image(640, 360, 'chapter08-bg').setOrigin(0.5);
-    // 添加暗色遮罩增强文字可读性
     this.add.rectangle(640, 360, 1280, 720, 0x000000, 0.3);
   }
 
@@ -36,12 +33,12 @@ export default class Chapter08Scene extends BaseScene {
 
   private startNarrative() {
     const lines = [
-'夜里，大家在篝火旁围坐。',
-'火光暖橙色的，映在每个人的脸上。',
-'一位匈奴老人闭着眼，唱起古老的歌。',
-'她听不懂歌词，但听懂了旋律。',
-'那是草原的声音。',
-'—— 四处看看，再继续前行 ——'
+      '夜里，大家在篝火旁围坐。',
+      '火光暖橙色的，映在每个人的脸上。',
+      '一位匈奴老人闭着眼，唱起古老的歌。',
+      '她听不懂歌词，但听懂了旋律。',
+      '那是草原的声音。',
+      '—— 四处看看，再继续前行 ——'
     ];
     this.showStorySequence(lines, () => {
       this.narrativeDone = true;
@@ -50,49 +47,28 @@ export default class Chapter08Scene extends BaseScene {
   }
 
   private spawnHotspots() {
-    // 篝火炭收集品已在 setupInteractions 中添加
-    // 继续前行按钮
+    // 关键选择：与陌生人交流还是独处
     this.addHotspot({
-      id: 'continue_btn', x: 640, y: 620, width: 260, height: 50,
-      type: 'continue', label: '继续前行 →',
-      narrativeText: '天亮了，继续上路。',
-      oneShot: true, onContinue: 'chapter09',
+      id: 'ch08_choice',
+      x: 640, y: 500, width: 420, height: 60,
+      type: 'choice',
+      label: '做出选择',
+      narrativeText: '火光中，一个匈奴士兵朝你笑了笑。你想怎么做？',
+      choices: [
+        {
+          id: 'talk',
+          text: '💬 用刚学的匈奴语打招呼——试着交流',
+          resultText: '士兵愣了一下，然后大笑起来。他用生硬的汉语说："你——好！"两人连比带划地聊了很久。她第一次觉得，这些"蛮族"和中原人也没什么不同。',
+        },
+        {
+          id: 'alone',
+          text: '🔥 安静地坐在火边——不打扰任何人',
+          resultText: '她专注地看着火焰。老人还在唱歌，歌声时而悠扬时而苍凉。她闭上眼睛，让火光照亮她的脸。这一刻没有中原也没有匈奴，只有火。',
+        },
+      ],
+      onChoice: { talk: 'chapter09', alone: 'chapter09' },
+      oneShot: true,
     });
-  }
-
-  private showStorySequence(lines: string[], onComplete: () => void) {
-    let idx = 0;
-    const text = this.add
-      .text(640, 360, '', {
-        fontSize: '28px',
-        color: '#ffffff',
-        fontFamily: 'serif',
-        align: 'center',
-        wordWrap: { width: 900 },
-        lineSpacing: 10,
-      })
-      .setOrigin(0.5)
-      .setAlpha(0);
-
-    const showNext = () => {
-      if (idx >= lines.length) {
-        text.destroy();
-        onComplete();
-        return;
-      }
-      text.setText(lines[idx]);
-      this.tweens.add({
-        targets: text,
-        alpha: 1,
-        duration: 600,
-        ease: 'Power2',
-      });
-      this.input.once('pointerdown', () => {
-        idx++;
-        showNext();
-      });
-    };
-    showNext();
   }
 
   protected onInteraction(target: string): void {

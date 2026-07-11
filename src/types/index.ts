@@ -93,11 +93,19 @@ export interface TransitionEvent {
 export type GameEvent = DialogueEvent | CollectEvent | TransitionEvent;
 
 // 热区交互
+/** 选项定义（用于 choice 类型热区） */
+export interface ChoiceOption {
+  id: string;
+  text: string;
+  /** 选择后的额外叙事文本 */
+  resultText?: string;
+}
+
 export interface HotspotConfig {
   id: string;
   x: number; y: number;
   width: number; height: number;
-  type: 'collectible' | 'observation' | 'dialogue' | 'continue';
+  type: 'collectible' | 'observation' | 'dialogue' | 'continue' | 'choice';
   label?: string;
   collectibleId?: string;
   narrativeText?: string;
@@ -105,6 +113,10 @@ export interface HotspotConfig {
   oneShot?: boolean;
   /** 点击此热区后跳转到下一章（用于"继续前行"按钮） */
   onContinue?: string;
+  /** 选择型热区的选项列表 */
+  choices?: ChoiceOption[];
+  /** 每个选项对应的后续目标（choiceId -> nextChapter） */
+  onChoice?: Record<string, string>;
 }
 
 export interface CollectibleItem {

@@ -28,7 +28,7 @@ export default class Chapter07Scene extends BaseScene {
     this.addHotspot({ id: 'continue', x: 640, y: 620, width: 300, height: 60, type: 'continue', label: '继续前行 →', narrativeText: '暴风雪终会过去。', oneShot: true, onContinue: 'chapter08' });
   }
   protected onInteraction(_t: string) {}
-  private showStorySequence(lines: string[], onComplete: () => void) {
+  protected showStorySequence(lines: string[], onComplete: () => void) {
     let idx = 0;
     const text = this.add.text(640, 360, '', { fontSize: '28px', color: '#ffffff', fontFamily: 'serif', align: 'center', wordWrap: { width: 900 }, lineSpacing: 10 }).setOrigin(0.5).setAlpha(0);
     const next = () => { if (idx >= lines.length) { text.destroy(); onComplete(); return; } text.setText(lines[idx]); this.tweens.add({ targets: text, alpha: 1, duration: 600, ease: 'Power2' }); this.input.once('pointerdown', () => { idx++; next(); }); };

@@ -114,7 +114,7 @@ export default class PrologueScene extends BaseScene {
     });
   }
 
-  private showStorySequence(lines: string[], onComplete: () => void) {
+  protected showStorySequence(lines: string[], onComplete: () => void) {
     let idx = 0;
     const text = this.add
       .text(640, 360, '', {

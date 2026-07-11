@@ -67,7 +67,7 @@ export default class Chapter02Scene extends BaseScene {
 
   protected onInteraction(_target: string): void {}
 
-  private showStorySequence(lines: string[], onComplete: () => void) {
+  protected showStorySequence(lines: string[], onComplete: () => void) {
     let idx = 0;
     const text = this.add.text(640, 360, '', {
       fontSize: '28px', color: '#ffffff', fontFamily: 'serif',

@@ -9,9 +9,13 @@ interface GameSettings {
 interface GameState {
   currentChapter: string;
   progress: Record<string, boolean>;
+  /** 玩家关键选择记录: hotspotId -> optionId */
+  choices: Record<string, string>;
   settings: GameSettings;
   setChapter: (chapterId: string) => void;
   completeChapter: (chapterId: string) => void;
+  makeChoice: (hotspotId: string, optionId: string) => void;
+  getChoice: (hotspotId: string) => string | undefined;
   updateSettings: (settings: Partial<GameSettings>) => void;
   resetProgress: () => void;
 }
@@ -20,6 +24,7 @@ export const useGameStore = create<GameState>()(
   persist(
     (set, get) => ({
       currentChapter: 'prologue',
+      choices: {},
       progress: {},
       settings: {
         volume: 0.8,
@@ -30,6 +35,11 @@ export const useGameStore = create<GameState>()(
         set((state) => ({
           progress: { ...state.progress, [chapterId]: true },
         })),
+      makeChoice: (hotspotId, optionId) =>
+        set((state) => ({
+          choices: { ...state.choices, [hotspotId]: optionId },
+        })),
+      getChoice: (hotspotId) => get().choices[hotspotId],
       updateSettings: (newSettings) =>
         set((state) => ({
           settings: { ...state.settings, ...newSettings },

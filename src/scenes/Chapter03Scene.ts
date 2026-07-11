@@ -30,7 +30,7 @@ export default class Chapter03Scene extends BaseScene {
   }
 
   protected onInteraction(_t: string) {}
-  private showStorySequence(lines: string[], onComplete: () => void) {
+  protected showStorySequence(lines: string[], onComplete: () => void) {
     let idx = 0;
     const text = this.add.text(640, 360, '', { fontSize: '28px', color: '#ffffff', fontFamily: 'serif', align: 'center', wordWrap: { width: 900 }, lineSpacing: 10 }).setOrigin(0.5).setAlpha(0);
     const showNext = () => { if (idx >= lines.length) { text.destroy(); onComplete(); return; } text.setText(lines[idx]); this.tweens.add({ targets: text, alpha: 1, duration: 600, ease: 'Power2' }); this.input.once('pointerdown', () => { idx++; showNext(); }); };

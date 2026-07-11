@@ -2,6 +2,7 @@
 import Phaser from 'phaser';
 import BaseScene from './BaseScene';
 import { AudioManager } from '../core/AudioManager';
+import { useGameStore } from '../store/gameStore';
 
 export default class Chapter06Scene extends BaseScene {
   constructor(am: AudioManager) { super('chapter06', am); }
@@ -12,7 +13,32 @@ export default class Chapter06Scene extends BaseScene {
   }
   protected setupInteractions() { this.startNarrative(); }
   private startNarrative() {
-    const lines = ['出关之后，天地突然变了。','天空是钴蓝色的，高得吓人。','草地一望无际。','这里的一切都不同了。','—— 四处看看，再继续前行 ——'];
+    // 读取 Ch05 的选择
+    const choice = useGameStore.getState().getChoice('ch05_choice');
+
+    const lines: string[] = [];
+    if (choice === 'look_back') {
+      lines.push(
+        '出关之后，天地突然变了。',
+        '她眼前是无尽的草原，但脑海中仍然是长安的城门。',
+        '天空是钴蓝色的，高得吓人。',
+        '她回头望了一眼——雁门关已经小成一个黑点。',
+        '草地一望无际，风声里带着陌生的气息。',
+        '她摸了摸袖口里藏着的那片树叶。那是长安最后的礼物。',
+        '—— 四处看看，再继续前行 ——'
+      );
+    } else {
+      lines.push(
+        '出关之后，天地突然变了。',
+        '她头也不回地走进了草原。',
+        '天空是钴蓝色的，高得吓人。',
+        '她第一次感到自由——虽然这自由来得让人害怕。',
+        '草地一望无际，马蹄踏过的地方野花被碾碎。',
+        '她深呼吸，草原的风灌满她的肺。从今天起，这里是她的家。',
+        '—— 四处看看，再继续前行 ——'
+      );
+    }
+
     this.showStorySequence(lines, () => { this.narrativeDone = true; this.spawnHotspots(); });
   }
   private spawnHotspots() {
@@ -22,10 +48,4 @@ export default class Chapter06Scene extends BaseScene {
     this.addHotspot({ id: 'continue_btn', x: 640, y: 620, width: 260, height: 50, type: 'continue', label: '继续前行 →', narrativeText: '草原很大，路还很长。', oneShot: true, onContinue: 'chapter07' });
   }
   protected onInteraction(_t: string) {}
-  private showStorySequence(lines: string[], onComplete: () => void) {
-    let idx = 0;
-    const text = this.add.text(640, 360, '', { fontSize: '28px', color: '#ffffff', fontFamily: 'serif', align: 'center', wordWrap: { width: 900 }, lineSpacing: 10 }).setOrigin(0.5).setAlpha(0);
-    const showNext = () => { if (idx >= lines.length) { text.destroy(); onComplete(); return; } text.setText(lines[idx]); this.tweens.add({ targets: text, alpha: 1, duration: 600, ease: 'Power2' }); this.input.once('pointerdown', () => { idx++; showNext(); }); };
-    showNext();
-  }
 }

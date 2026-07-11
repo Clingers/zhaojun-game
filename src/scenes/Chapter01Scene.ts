@@ -74,7 +74,7 @@ export default class Chapter01Scene extends BaseScene {
       oneShot: true,
     });
 
-    // 继续前行按钮
+    // 继续前行按钮（隐藏式：需收集铜镜 + 至少点一个观察点才出现）
     this.addHotspot({
       id: 'continue_btn',
       x: 640, y: 620, width: 260, height: 50,
@@ -88,45 +88,5 @@ export default class Chapter01Scene extends BaseScene {
 
   protected onInteraction(target: string): void {
     // 已废弃，由热区系统处理
-  }
-
-  protected playAmbientAudio() {
-    // TODO: 章节环境音效
-  }
-
-  // ──── 复用 BaseScene 的 showStorySequence（每个子类都有，后续提取到基类）────
-  private showStorySequence(lines: string[], onComplete: () => void) {
-    let idx = 0;
-    const text = this.add
-      .text(640, 360, '', {
-        fontSize: '28px',
-        color: '#ffffff',
-        fontFamily: 'serif',
-        align: 'center',
-        wordWrap: { width: 900 },
-        lineSpacing: 10,
-      })
-      .setOrigin(0.5)
-      .setAlpha(0);
-
-    const showNext = () => {
-      if (idx >= lines.length) {
-        text.destroy();
-        onComplete();
-        return;
-      }
-      text.setText(lines[idx]);
-      this.tweens.add({
-        targets: text,
-        alpha: 1,
-        duration: 600,
-        ease: 'Power2',
-      });
-      this.input.once('pointerdown', () => {
-        idx++;
-        showNext();
-      });
-    };
-    showNext();
   }
 }
