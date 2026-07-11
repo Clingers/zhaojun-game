@@ -203,10 +203,10 @@ export default abstract class BaseScene extends Phaser.Scene {
     // 如果本章有收集品但还没收集，不解锁
     if (this.hasCollectibleInChapter && !this.collectedThisChapter) return;
 
-    // 如果本章有观察点但还没点过，不解锁（没有观察点的章节跳过此条件）
-    if (this.totalObservationCount > 0 && this.observedThisChapter.size === 0) {
-      // 如果已经收集了物品但还没观察，给一次提示
-      if (this.collectedThisChapter && !this.hintShown) {
+    // 如果本章没有收集品，需要至少点一个观察点才能解锁
+    if (!this.hasCollectibleInChapter && this.totalObservationCount > 0 && this.observedThisChapter.size === 0) {
+      // 给一次提示
+      if (!this.hintShown) {
         this.hintShown = true;
         this.showDialogue('四周似乎还有什么值得一看的地方...', 3000);
       }
