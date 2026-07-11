@@ -36,7 +36,13 @@ export default abstract class BaseScene extends Phaser.Scene {
   }
 
   preload() {
-    // 子类实现资源加载
+    // 加载所有收集品 SVG 图标
+    const items = useCollectiblesStore.getState().items;
+    Object.values(items).forEach((item) => {
+      if (!this.textures.exists(item.id)) {
+        this.load.image(item.id, item.imageUrl);
+      }
+    });
   }
 
   create() {
@@ -93,6 +99,24 @@ export default abstract class BaseScene extends Phaser.Scene {
         targets: [glow, label],
         alpha: { from: 0.4, to: 0.8 },
         duration: 1500,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      });
+    }
+
+    // 收集品: 显示物品 SVG 图标
+    if (isCollectible && cfg.collectibleId) {
+      const icon = this.add.image(cfg.x, cfg.y - cfg.height / 2 - 36, cfg.collectibleId)
+        .setScale(0.45)
+        .setAlpha(0.9)
+        .setDepth(1);
+      // 图标也有脉冲
+      this.tweens.add({
+        targets: icon,
+        alpha: { from: 0.7, to: 1 },
+        scale: { from: 0.42, to: 0.48 },
+        duration: 1800,
         yoyo: true,
         repeat: -1,
         ease: 'Sine.easeInOut',

@@ -8,7 +8,7 @@ export default class Chapter03Scene extends BaseScene {
     super('chapter03', audioManager);
   }
 
-  preload() { this.load.image('chapter03-bg', '/assets/images/chapter-03/bg.svg'); }
+  preload() { super.preload(); this.load.image('chapter03-bg', '/assets/images/chapter-03/bg.svg'); }
 
   protected loadBackground() {
     this.background = this.add.image(640, 360, 'chapter03-bg').setOrigin(0.5);

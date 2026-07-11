@@ -38,7 +38,7 @@ export default function HUD({ className = '' }: HUDProps) {
         </div>
 
         {/* 旅程进度 */}
-        <div className="bg-black/40 backdrop-blur-sm px-4 py-2 rounded-lg flex items-center gap-3">
+        <div className="bg-black/40 backdrop-blur-sm px-4 py-2 rounded-lg flex items-center gap-3 pointer-events-auto">
           <div className="flex items-center gap-1">
             <span className="text-white text-sm">📖</span>
             <span className="text-white/80 text-sm">
@@ -67,7 +67,7 @@ export default function HUD({ className = '' }: HUDProps) {
         <button
           onClick={() => setShowAlbum(true)}
           className="bg-black/40 backdrop-blur-sm px-3 py-2 rounded-lg text-white/70 text-sm
-                     hover:bg-black/60 hover:text-white transition-all duration-300 font-serif"
+                     hover:bg-black/60 hover:text-white transition-all duration-300 font-serif pointer-events-auto"
         >
           ✨ 旅行册 ({getProgress()}%)
         </button>
@@ -84,7 +84,7 @@ export default function HUD({ className = '' }: HUDProps) {
             }
           }}
           className="bg-black/30 hover:bg-black/50 backdrop-blur-sm px-2 py-1 rounded
-                     text-white/40 hover:text-white/70 text-xs transition-all duration-300"
+                     text-white/40 hover:text-white/70 text-xs transition-all duration-300 pointer-events-auto"
         >
           ⚙
         </button>

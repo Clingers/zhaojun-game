@@ -5,7 +5,7 @@ import { AudioManager } from '../core/AudioManager';
 
 export default class Chapter04Scene extends BaseScene {
   constructor(am: AudioManager) { super('chapter04', am); }
-  preload() { this.load.image('chapter04-bg', '/assets/images/chapter-04/bg.svg'); }
+  preload() { super.preload(); this.load.image('chapter04-bg', '/assets/images/chapter-04/bg.svg'); }
   protected loadBackground() {
     this.background = this.add.image(640, 360, 'chapter04-bg').setOrigin(0.5);
     this.add.rectangle(640, 360, 1280, 720, 0x000000, 0.3);
