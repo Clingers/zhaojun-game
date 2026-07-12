@@ -14,7 +14,7 @@ export default class Chapter06Scene extends BaseScene {
   ];
 
   constructor(am: AudioManager) { super('chapter06', am); }
-  preload() { super.preload(); this.load.image('chapter06-bg', '/assets/images/chapter-06/bg.svg'); }
+  preload() { super.preload(); this.load.image('chapter06-bg', '/assets/images/chapter-06/bg.jpeg'); }
   protected loadBackground() {
     this.background = this.add.image(640, 360, 'chapter06-bg').setOrigin(0.5);
     this.add.rectangle(640, 360, 1280, 720, 0x000000, 0.3);

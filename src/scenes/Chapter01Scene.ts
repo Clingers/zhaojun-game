@@ -18,7 +18,7 @@ export default class Chapter01Scene extends BaseScene {
 
   preload() {
     super.preload();
-    this.load.image('chapter01-bg', '/assets/images/chapter-01/bg.svg');
+    this.load.image('chapter01-bg', '/assets/images/chapter-01/bg.jpeg');
   }
 
   protected loadBackground() {
