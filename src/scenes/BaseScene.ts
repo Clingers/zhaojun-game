@@ -4,6 +4,7 @@ import { DialogueEvent, CollectEvent, TransitionEvent, HotspotConfig, ChoiceOpti
 import { GameEngine } from '../core/GameEngine';
 import { useCollectiblesStore } from '../store/collectiblesStore';
 import { useGameStore } from '../store/gameStore';
+import { DialogueBar } from '../ui/DialogueBar';
 
 export default abstract class BaseScene extends Phaser.Scene {
   protected chapterId: string;
@@ -13,6 +14,7 @@ export default abstract class BaseScene extends Phaser.Scene {
   protected hotspotGlows: Phaser.GameObjects.Graphics[] = [];
   protected hotspotLabels: Phaser.GameObjects.Text[] = [];
   protected narrativeDone: boolean = false;
+  protected dialogueBar!: DialogueBar;
 
   /** 子类可覆写：空白区域点击时随机展示的环境描述 */
   protected ambientTexts: string[] = [];
@@ -93,6 +95,9 @@ export default abstract class BaseScene extends Phaser.Scene {
     this.setupInteractions();
     this.playAmbientAudio();
 
+    // 创建对话栏
+    this.dialogueBar = new DialogueBar(this);
+
     // 注册空白区域点击（延迟一帧避免与热点点击冲突）
     this.time.delayedCall(100, () => {
       this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
@@ -111,6 +116,7 @@ export default abstract class BaseScene extends Phaser.Scene {
 
   /** 空白区域点击处理 */
   private onAmbientClick(pointer: Phaser.Input.Pointer) {
+    if (this.dialogueBar.isVisible()) return; // 对话栏活跃时不触发
     if (this.ambientTexts.length === 0) return;
     if (this.narrativeDone === false) return; // 叙事中不触发
 
@@ -496,40 +502,28 @@ export default abstract class BaseScene extends Phaser.Scene {
 
   protected abstract onInteraction(target: string): void;
 
-  /** 展示叙事序列（逐句点击推进） */
-  protected showStorySequence(lines: string[], onComplete: () => void) {
-    let idx = 0;
-    const text = this.add
-      .text(640, 360, '', {
-        fontSize: '28px',
-        color: '#ffffff',
-        fontFamily: 'serif',
-        align: 'center',
-        wordWrap: { width: 900 },
-        lineSpacing: 10,
-      })
-      .setOrigin(0.5)
-      .setAlpha(0);
+  /** 子类可覆写：每步叙事推进时的回调（用于序章分镜切换等） */
+  protected onStoryStep(idx: number): void {
+    // 默认不做任何事
+  }
 
-    const showNext = () => {
+  /** 展示叙事序列（逐句点击推进，使用底部对话栏） */
+  protected showStorySequence(lines: string[], onComplete: () => void, speaker?: string) {
+    let idx = 0;
+    const advance = () => {
       if (idx >= lines.length) {
-        text.destroy();
+        this.dialogueBar.hide();
         onComplete();
         return;
       }
-      text.setText(lines[idx]);
-      this.tweens.add({
-        targets: text,
-        alpha: 1,
-        duration: 600,
-        ease: 'Power2',
-      });
-      this.input.once('pointerdown', () => {
-        idx++;
-        showNext();
+      this.dialogueBar.show(lines[idx], speaker, { current: idx + 1, total: lines.length });
+      idx++;
+      this.dialogueBar.onNext(() => {
+        if (idx < lines.length) this.onStoryStep(idx);
+        advance();
       });
     };
-    showNext();
+    advance();
   }
 
   protected showDialogue(text: string, duration: number = 3000) {

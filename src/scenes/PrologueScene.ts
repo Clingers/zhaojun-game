@@ -151,48 +151,43 @@ export default class PrologueScene extends BaseScene {
       setTimeout(() => {
         this.transitionTo('chapter01');
       }, 2000);
-    }, swapPanel);
+    });
   }
 
-  protected showStorySequence(lines: string[], onComplete: () => void, onStep?: (step: number) => void) {
-    let idx = 0;
-    const text = this.add
-      .text(640, 360, '', {
-        fontSize: '24px',
-        color: '#ffffff',
-        fontFamily: 'serif',
-        align: 'center',
-        wordWrap: { width: 900 },
-        lineSpacing: 8,
-      })
-      .setOrigin(0.5)
-      .setAlpha(0);
+  /** 序章每步切换分镜背景 */
+  protected onStoryStep(idx: number): void {
+    this.swapPanel();
+  }
 
-    const showNext = () => {
-      if (idx >= lines.length) {
-        text.destroy();
-        onComplete();
-        return;
+  private currentPanel: number = -1;
+  private panelImages: string[] = [
+    'prologue-p1', // 深秋。北方。→ 天空大雁南飞
+    'prologue-p3', // 马车出发 → 长安城墙
+    'prologue-p4', // 车中女子 → 昭君回望
+    'prologue-p2', // 大雁跟着 → 大雁悬停
+    'prologue-p5', // 它不知道 → 大雁转向
+    'prologue-p6', // 她不知道 → 天地苍茫
+  ];
+
+  private swapPanel() {
+    this.currentPanel++;
+    if (this.currentPanel < this.panelImages.length) {
+      if (this.background) {
+        this.tweens.add({
+          targets: this.background,
+          alpha: 0,
+          duration: 300,
+        });
       }
-
-      // 在显示新文字前先切换背景
-      if (onStep) onStep(idx);
-
-      text.setText(lines[idx]);
+      this.background = this.add.image(640, 360, this.panelImages[this.currentPanel])
+        .setOrigin(0.5)
+        .setAlpha(0);
       this.tweens.add({
-        targets: text,
+        targets: this.background,
         alpha: 1,
         duration: 600,
-        ease: 'Power2',
       });
-
-      this.input.once('pointerdown', () => {
-        idx++;
-        showNext();
-      });
-    };
-
-    showNext();
+    }
   }
 
   protected onInteraction(target: string): void {
