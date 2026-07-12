@@ -15,7 +15,14 @@ export default class PrologueScene extends BaseScene {
 
   preload() {
     super.preload();
-    this.load.image('prologue-bg', '/assets/images/prologue/bg.svg');
+    this.load.image('prologue-bg', '/assets/images/prologue/bg.jpeg');
+    // 序章分镜图片
+    this.load.image('prologue-p1', '/assets/images/prologue/p1-sky.jpeg');
+    this.load.image('prologue-p2', '/assets/images/prologue/p2-goose-hover.jpeg');
+    this.load.image('prologue-p3', '/assets/images/prologue/p3-changan-wall.jpeg');
+    this.load.image('prologue-p4', '/assets/images/prologue/p4-zhaojun.jpeg');
+    this.load.image('prologue-p5', '/assets/images/prologue/p5-goose-turn.jpeg');
+    this.load.image('prologue-p6', '/assets/images/prologue/p6-wide-landscape.jpeg');
   }
 
   protected loadBackground() {
@@ -93,6 +100,39 @@ export default class PrologueScene extends BaseScene {
     this.textElements.forEach((t) => t.destroy());
     this.textElements = [];
 
+    // 序章分镜图片映射
+    const panelImages = [
+      'prologue-p1', // 深秋。北方。→ 天空大雁南飞
+      'prologue-p3', // 马车出发 → 长安城墙
+      'prologue-p4', // 车中女子 → 昭君回望
+      'prologue-p2', // 大雁跟着 → 大雁悬停
+      'prologue-p5', // 它不知道 → 大雁转向
+      'prologue-p6', // 她不知道 → 天地苍茫
+    ];
+    let currentPanel = -1;
+
+    const swapPanel = () => {
+      currentPanel++;
+      if (currentPanel < panelImages.length) {
+        // 淡出旧背景，淡入新背景
+        if (this.background) {
+          this.tweens.add({
+            targets: this.background,
+            alpha: 0,
+            duration: 300,
+          });
+        }
+        this.background = this.add.image(640, 360, panelImages[currentPanel])
+          .setOrigin(0.5)
+          .setAlpha(0);
+        this.tweens.add({
+          targets: this.background,
+          alpha: 1,
+          duration: 600,
+        });
+      }
+    };
+
     // 序章叙事序列
     const lines = [
       '深秋。北方。',
@@ -111,10 +151,10 @@ export default class PrologueScene extends BaseScene {
       setTimeout(() => {
         this.transitionTo('chapter01');
       }, 2000);
-    });
+    }, swapPanel);
   }
 
-  protected showStorySequence(lines: string[], onComplete: () => void) {
+  protected showStorySequence(lines: string[], onComplete: () => void, onStep?: (step: number) => void) {
     let idx = 0;
     const text = this.add
       .text(640, 360, '', {
@@ -135,6 +175,9 @@ export default class PrologueScene extends BaseScene {
         return;
       }
 
+      // 在显示新文字前先切换背景
+      if (onStep) onStep(idx);
+
       text.setText(lines[idx]);
       this.tweens.add({
         targets: text,
@@ -145,7 +188,6 @@ export default class PrologueScene extends BaseScene {
 
       this.input.once('pointerdown', () => {
         idx++;
-        // 递归调用 showNext 来处理下一行：设置文字 + 注册下一次点击
         showNext();
       });
     };
