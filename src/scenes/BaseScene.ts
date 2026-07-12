@@ -222,20 +222,18 @@ export default abstract class BaseScene extends Phaser.Scene {
       zone.setInteractive({ useHandCursor: true });
     }
 
-    // 发光指示环
+    // 发光指示环 — 极淡，仅悬停时可见
     const glow = this.add.graphics();
-    glow.lineStyle(2, isContinue ? 0xffffff : isChoice ? 0x88ccff : isClue ? 0x88ff88 : 0xffd700, 0.4);
+    glow.lineStyle(1, isContinue ? 0xffffff : isChoice ? 0x88ccff : isClue ? 0x66ff66 : 0xffd700, 0.2);
     glow.strokeRoundedRect(
       cfg.x - cfg.width / 2, cfg.y - cfg.height / 2,
       cfg.width, cfg.height, 6
     );
 
-    if (isHidden) {
+    if (isHidden || isUnmarked) {
       glow.setAlpha(0);
-    } else if (isUnmarked) {
-      glow.setAlpha(0); // 无标记探索点默认不可见
     } else {
-      glow.setAlpha(isCollectible || isChoice || isClue ? 0.4 : 0);
+      glow.setAlpha(isCollectible || isChoice || isClue ? 0.15 : 0);
     }
 
     // 标签文字
@@ -248,20 +246,18 @@ export default abstract class BaseScene extends Phaser.Scene {
       padding: { x: 6, y: 2 },
     }).setOrigin(0.5);
 
-    if (isHidden) {
-      label.setAlpha(0);
-    } else if (isUnmarked) {
+    if (isHidden || isUnmarked) {
       label.setAlpha(0);
     } else {
-      label.setAlpha(isCollectible || isChoice || isClue ? 0.6 : 0);
+      label.setAlpha(0); // 标签默认隐藏，仅悬停时显示
     }
 
-    // 脉冲动画（非隐藏、非无标记）
+    // 极淡脉冲动画（非隐藏、非无标记）
     if (!isHidden && !isUnmarked && (isCollectible || isChoice || isClue)) {
       this.tweens.add({
         targets: [glow, label],
-        alpha: { from: 0.4, to: 0.8 },
-        duration: 1500,
+        alpha: { from: 0.10, to: 0.25 },
+        duration: 2000,
         yoyo: true,
         repeat: -1,
         ease: 'Sine.easeInOut',
@@ -294,21 +290,18 @@ export default abstract class BaseScene extends Phaser.Scene {
     // 悬停效果（隐藏收集品和无标记点有不同行为）
     if (!isHidden) {
       zone.on('pointerover', () => {
-        glow.setAlpha(1);
-        if (!isUnmarked) label.setAlpha(1);
+        glow.setAlpha(0.5);
+        if (!isUnmarked) label.setAlpha(0.75);
       });
       zone.on('pointerout', () => {
-        if (isUnmarked) {
-          glow.setAlpha(0);
-          label.setAlpha(0);
-        } else if (!isCollectible && !isChoice && !isClue && !isContinue) {
+        if (isUnmarked || isObservation) {
           glow.setAlpha(0);
           label.setAlpha(0);
         } else if (isContinue) {
           // 继续按钮保持当前可见状态
         } else {
-          glow.setAlpha(0.4);
-          label.setAlpha(0.6);
+          glow.setAlpha(0.15);
+          label.setAlpha(0);
         }
       });
     }
@@ -357,6 +350,16 @@ export default abstract class BaseScene extends Phaser.Scene {
       if (!this.hintShown) {
         this.hintShown = true;
         this.showDialogue('四周似乎还有什么值得一看的地方...', 3000);
+      }
+      return;
+    }
+
+    // 有隐藏收集品但还没找到：如果玩家已经把可见的观察点都点了一遍，给更强提示
+    if (this.hasCollectibleInChapter && !this.collectedThisChapter &&
+        this.totalObservationCount > 0 && this.observedThisChapter.size >= this.totalObservationCount) {
+      if (!this.hintShown) {
+        this.hintShown = true;
+        this.showDialogue('雨声中似乎有一些不寻常的声音，仔细听听...', 4000);
       }
       return;
     }

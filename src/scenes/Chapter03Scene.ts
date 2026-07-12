@@ -38,9 +38,9 @@ export default class Chapter03Scene extends BaseScene {
   }
 
   private spawnHotspots() {
-    // 线索：雨中的落叶声
+    // 线索：雨中的落叶声（区域扩大便于发现）
     this.addHotspot({
-      id: 'leaf_clue', x: 520, y: 390, width: 50, height: 40,
+      id: 'leaf_clue', x: 520, y: 390, width: 80, height: 60,
       type: 'clue', label: '雨中的声音',
       narrativeText: '雨声中似乎有一片叶子被风吹落的声音——和其他雨声不同，更轻，更脆。她循声看去——',
       revealsCollectible: 'qin_forest_leaf',
