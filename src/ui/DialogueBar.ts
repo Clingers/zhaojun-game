@@ -21,10 +21,10 @@ export class DialogueBar {
   private nextCallback: (() => void) | null = null;
   private _visible: boolean = false;
 
-  private readonly BAR_Y = 480;
-  private readonly BAR_HEIGHT = 240;
+  private readonly BAR_Y = 560;
+  private readonly BAR_HEIGHT = 160;
   private readonly BAR_WIDTH = 1280;
-  private readonly PADDING = 40;
+  private readonly PADDING = 30;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -44,25 +44,25 @@ export class DialogueBar {
     ).setOrigin(0.5);
 
     // 说话人名称
-    this.speakerText = scene.add.text(this.PADDING, this.BAR_Y + 14, '', {
-      fontSize: '17px',
+    this.speakerText = scene.add.text(this.PADDING, this.BAR_Y + 10, '', {
+      fontSize: '15px',
       color: '#D4A54A',
       fontFamily: 'serif',
     });
 
     // 正文
-    this.contentText = scene.add.text(this.PADDING, this.BAR_Y + 46, '', {
-      fontSize: '22px',
+    this.contentText = scene.add.text(this.PADDING, this.BAR_Y + 34, '', {
+      fontSize: '20px',
       color: '#ffffff',
       fontFamily: 'serif',
       wordWrap: { width: this.BAR_WIDTH - this.PADDING * 2 - 60 },
-      lineSpacing: 6,
+      lineSpacing: 4,
     });
 
     // 进度指示（右上角）
     this.progressText = scene.add.text(
-      this.BAR_WIDTH - this.PADDING, this.BAR_Y + 14, '', {
-        fontSize: '15px',
+      this.BAR_WIDTH - this.PADDING, this.BAR_Y + 10, '', {
+        fontSize: '13px',
         color: '#888888',
         fontFamily: 'serif',
       }
@@ -70,8 +70,8 @@ export class DialogueBar {
 
     // 翻页指示器（右下角闪烁 ▼）
     this.nextIndicator = scene.add.text(
-      this.BAR_WIDTH - this.PADDING, this.BAR_Y + this.BAR_HEIGHT - 28, '▼', {
-        fontSize: '18px',
+      this.BAR_WIDTH - this.PADDING, this.BAR_Y + this.BAR_HEIGHT - 22, '▼', {
+        fontSize: '16px',
         color: '#D4A54A',
         fontFamily: 'serif',
       }

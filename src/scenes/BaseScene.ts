@@ -92,11 +92,12 @@ export default abstract class BaseScene extends Phaser.Scene {
     this.lastAmbientTime = 0;
 
     this.loadBackground();
-    this.setupInteractions();
     this.playAmbientAudio();
 
-    // 创建对话栏
+    // 创建对话栏（必须在 setupInteractions 之前，因为子类可能立即调用 showStorySequence）
     this.dialogueBar = new DialogueBar(this);
+
+    this.setupInteractions();
 
     // 注册空白区域点击（延迟一帧避免与热点点击冲突）
     this.time.delayedCall(100, () => {
