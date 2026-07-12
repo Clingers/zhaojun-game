@@ -15,7 +15,7 @@ export default class PrologueScene extends BaseScene {
 
   preload() {
     super.preload();
-    this.load.image('prologue-bg', '/assets/images/prologue/bg.jpeg');
+    this.load.image('prologue-bg', '/assets/images/prologue/bg.svg');
   }
 
   protected loadBackground() {
